@@ -9,9 +9,35 @@ app_ui <- function(request) {
     # Leave this function for adding external resources
     golem_add_external_resources(),
     # Your application UI logic
-    fluidPage(
-      h1("experimentalRepo")
+    shinydashboard::dashboardPage(
+      header = shinydashboard::dashboardHeader(title = 'Simulations'),
+      sidebar = shinydashboard::dashboardSidebar(
+        width = 250,
+        disable = FALSE,
+        shinydashboard::sidebarMenu(
+          id = 'tabs',
+          shinydashboard::menuItem('Mean/Variance Effect Tests', tabName = 'meanvar'),
+          shinydashboard::menuItem('Bimodality Tests', tabName = 'bimodal')#,
+          # shinydashboard::menuItem('Distribution Tests', tabName = 'distribdiff')
+        ) # END sidebarMenu
+      ), # END dashboardSidebar,
+      body = shinydashboard::dashboardBody(
+        # tags$head(
+        #   tags$link(rel = 'stylesheet', type = 'text/css', href = '~/TR01/style.css')
+        # ),
+        dashboardthemes::shinyDashboardThemes(theme = 'poor_mans_flatly'),
+
+        shinydashboard::tabItems(
+          shinydashboard::tabItem(tabName = 'meanvar', mod_meanvarModule_ui('meanvarModule')),
+          shinydashboard::tabItem(tabName = 'bimodal', mod_bimodalityModule_ui('bimodalityModule'))#,
+          # shinydashboard::tabItem(tabName = 'distribdiff', distribDiffUI('distribDiffMod'))
+        )
+      ) # END dashboardBody
     )
+    # fluidPage(
+    #   h1("experimentalRepo"),
+    #   mod_bimodalityModule_ui("bimodalityModule_1")
+    # )
   )
 }
 

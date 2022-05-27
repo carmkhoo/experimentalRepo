@@ -19,13 +19,13 @@
 ## to change the name in the app_sys() function in app_config.R /!\
 ##
 golem::fill_desc(
-  pkg_name = "experimentalRepo", # The Name of the package containing the App
-  pkg_title = "PKG_TITLE", # The Title of the package containing the App
-  pkg_description = "PKG_DESC.", # The Description of the package containing the App
-  author_first_name = "AUTHOR_FIRST", # Your First Name
-  author_last_name = "AUTHOR_LAST", # Your Last Name
-  author_email = "AUTHOR@MAIL.COM", # Your Email
-  repo_url = NULL # The URL of the GitHub Repo (optional)
+  pkg_name = "shinyBifurcatoR", # The Name of the package containing the App
+  pkg_title = "shinyBifurcatoR", # The Title of the package containing the App
+  pkg_description = "Power Calculations with Simulated Genotype Data.", # The Description of the package containing the App
+  author_first_name = "Zachary", # Your First Name
+  author_last_name = "Madaj et al.", # Your Last Name
+  author_email = "Carmen.Khoo@mainehealth.org", # Your Email
+  repo_url = "https://www.github.com/carmkhoo/experimentalRepo" # The URL of the GitHub Repo (optional)
 )
 
 ## Set {golem} options ----

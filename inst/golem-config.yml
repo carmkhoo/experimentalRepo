@@ -1,5 +1,5 @@
 default:
-  golem_name: experimentalRepo
+  golem_name: shinyBifurcatoR
   golem_version: 0.0.0.9000
   app_prod: no
 production:

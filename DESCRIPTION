@@ -1,17 +1,30 @@
-Package: experimentalRepo
-Title: An Amazing Shiny App
+Package: shinyBifurcatoR
+Title: shinyBifurcatoR
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "firstname",
-           family = "lastname",
-           role = c("aut", "cre"),
-           email = "your@email.com")
-Description: What the package does (one paragraph).
-License: What license is it under?
+    person("Zachary", "Madaj et al.", , "Carmen.Khoo@mainehealth.org", role = c("cre", "aut"))
+Description: Power Calculations with Simulated Genotype Data.
+License: MIT + file LICENSE
+URL: https://www.github.com/carmkhoo/experimentalRepo
+BugReports: https://www.github.com/carmkhoo/experimentalRepo/issues
 Imports: 
     config (>= 0.3.1),
+    dashboardthemes,
+    diptest,
+    ggplot2,
     golem (>= 0.3.2),
-    shiny (>= 1.6.0)
+    LaplacesDemon,
+    mclust,
+    mousetrap,
+    plotly,
+    shiny (>= 1.6.0),
+    shinydashboard,
+    shinyWidgets
+Suggests: 
+    spelling,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
 Encoding: UTF-8
+Language: en-US
 LazyData: true
 RoxygenNote: 7.1.1
