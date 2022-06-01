@@ -190,14 +190,14 @@ mod_bimodalityModule_server <- function(id) {
                      ), id.vars = c("N", "Test"))
 
                      dens.plot = data.frame(var = c(
-                       rnorm(ceiling(input$p * 2000), input$mu1, input$sd1),
-                       rnorm(ceiling((1 - input$p) * 2000), input$mu2, input$sd2)
+                       stats::rnorm(ceiling(input$p * 2000), input$mu1, input$sd1),
+                       stats::rnorm(ceiling((1 - input$p) * 2000), input$mu2, input$sd2)
                      ))
 
 
                    } else {
                      if (input$dist == "beta") {
-                       dens.plot =  data.frame(var = rbeta(2000, input$s1, input$s2))
+                       dens.plot =  data.frame(var = stats::rbeta(2000, input$s1, input$s2))
                        calcs =  reshape2::melt(as.data.frame(
                          bifurcatoR::est_pow(
                            input$n,

@@ -1,12 +1,13 @@
 Package: shinyBifurcatoR
-Title: shinyBifurcatoR
+Title: Power Calculations with Simulated Genotype Data
 Version: 0.0.0.9000
 Authors@R: person('Zachary', 'Madaj et al.', email = 'carmkhoo@gmail.com', role = c('cre', 'aut'))
-Description: Power Calculations with Simulated Genotype Data.
+Description: TBD.
 License: MIT + file LICENSE
 URL: https://www.github.com/carmkhoo/experimentalRepo
 BugReports: https://www.github.com/carmkhoo/experimentalRepo/issues
 Imports: 
+    bifurcatoR,
     config (>= 0.3.1),
     dashboardthemes,
     diptest,
@@ -16,9 +17,11 @@ Imports:
     mclust,
     mousetrap,
     plotly,
+    reshape2,
     shiny (>= 1.6.0),
     shinydashboard,
-    shinyWidgets
+    shinyWidgets,
+    stats
 Suggests: 
     spelling,
     testthat (>= 3.0.0)

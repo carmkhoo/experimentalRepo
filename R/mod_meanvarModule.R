@@ -151,8 +151,8 @@ mod_meanvarModule_server <- function(id) {
 
 
                      dens.plot = data.frame(var = c(
-                       rnorm(3000, 0, 1),
-                       rnorm(3000, input$gaussmean, input$gaussvar)
+                       stats::rnorm(3000, 0, 1),
+                       stats::rnorm(3000, input$gaussmean, input$gaussvar)
                      ),
                      Group = c(rep("Genotype 1", 3000), rep("Genotype 2", 3000)))
 

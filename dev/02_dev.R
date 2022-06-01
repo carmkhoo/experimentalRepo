@@ -99,11 +99,14 @@ usethis::use_package("LaplacesDemon")
 usethis::use_package("mclust")
 usethis::use_package("mousetrap")
 usethis::use_package("plotly")
+usethis::use_package("reshape2")
 usethis::use_package("shiny")
 usethis::use_package("shinydashboard")
 usethis::use_package("shinyWidgets")
-# usethis::use_github_file("https://github.com/VanAndelInstitute/bifurcatoR/blob/main/R/est_pow_2samp.R")
+usethis::use_package("stats")
+# Custom package
 remotes::install_github("VanAndelInstitute/bifurcatoR", force = T)
+usethis::use_package("bifurcatoR")
 
 # You're now set! ----
 # go to dev/03_deploy.R

@@ -20,8 +20,8 @@
 ##
 golem::fill_desc(
   pkg_name = "shinyBifurcatoR", # The Name of the package containing the App
-  pkg_title = "shinyBifurcatoR", # The Title of the package containing the App
-  pkg_description = "Power Calculations with Simulated Genotype Data.", # The Description of the package containing the App
+  pkg_title = "Power Calculations with Simulated Genotype Data", # The Title of the package containing the App
+  pkg_description = "TBD.", # The Description of the package containing the App
   author_first_name = "Zachary", # Your First Name
   author_last_name = "Madaj et al.", # Your Last Name
   author_email = "carmkhoo@gmail.com", # Your Email
