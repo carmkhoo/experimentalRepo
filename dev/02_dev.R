@@ -105,8 +105,8 @@ usethis::use_package("shinydashboard")
 usethis::use_package("shinyWidgets")
 usethis::use_package("stats")
 # Custom package
-remotes::install_github("VanAndelInstitute/bifurcatoR", force = T)
-usethis::use_package("bifurcatoR")
+# remotes::install_github("VanAndelInstitute/bifurcatoR", force = T)
+usethis::use_dev_package("bifurcatoR", remote = "VanAndelInstitute/bifurcatoR")
 
 # You're now set! ----
 # go to dev/03_deploy.R
