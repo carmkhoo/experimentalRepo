@@ -7,7 +7,7 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-source("./est_pow_2samp.R")
+#source("./est_pow_2samp.R")
 mod_meanvarModule_ui <- function(id) {
   ns <- shiny::NS(id)
 

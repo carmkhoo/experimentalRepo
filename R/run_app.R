@@ -5,6 +5,9 @@
 #' @inheritParams shiny::shinyApp
 #'
 #' @export
+#' 
+#' @import bifurcatoR
+#'
 #' @importFrom shiny shinyApp
 #' @importFrom golem with_golem_options
 run_app <- function(
