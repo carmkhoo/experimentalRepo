@@ -6,8 +6,8 @@
 #'
 #' @noRd
 #'
-#' @importFrom shiny NS tagList
-source("./est_pow_2samp.R")
+#' @importFrom shiny NS tag
+
 mod_meanvarModule_ui <- function(id) {
   ns <- shiny::NS(id)
 
@@ -133,7 +133,7 @@ mod_meanvarModule_server <- function(id) {
                  ss <- reactive({
                    if (input$dist == "Gaussian") {
                      calcs =  reshape2::melt(as.data.frame(
-                       est_pow_2samp(
+                       bifurcatoR::est_pow_2samp(
                          input$nsize[1],
                          input$nsize[2],
                          input$alpha,

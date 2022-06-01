@@ -24,7 +24,7 @@ golem::fill_desc(
   pkg_description = "Power Calculations with Simulated Genotype Data.", # The Description of the package containing the App
   author_first_name = "Zachary", # Your First Name
   author_last_name = "Madaj et al.", # Your Last Name
-  author_email = "Carmen.Khoo@mainehealth.org", # Your Email
+  author_email = "carmkhoo@gmail.com", # Your Email
   repo_url = "https://www.github.com/carmkhoo/experimentalRepo" # The URL of the GitHub Repo (optional)
 )
 

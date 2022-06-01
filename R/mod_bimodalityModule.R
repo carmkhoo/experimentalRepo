@@ -6,7 +6,7 @@
 #'
 #' @noRd
 #'
-#' @importFrom shiny NS tagList
+#' @importFrom shiny NS tag
 mod_bimodalityModule_ui <- function(id) {
   ns <- shiny::NS(id)
 
