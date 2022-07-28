@@ -14,7 +14,7 @@ mod_distribDiffModule_ui <- function(id){
                           shiny::fluidRow(
                             shinyjs::useShinyjs(),
                             shiny::column(
-                              width = 4,
+                              width = 3,
                               shinydashboard::box(
                                 title = 'Parameters',
 
@@ -114,7 +114,6 @@ mod_distribDiffModule_ui <- function(id){
                                   )
                                 ),
 
-
                                 shiny::numericInput(
                                   inputId = ns('nsim'),
                                   label = 'Number of Simulations',
@@ -172,10 +171,21 @@ mod_distribDiffModule_ui <- function(id){
                                   )
                                 ),
 
+                                # shinyWidgets::actionBttn(
+                                #   inputId = "updateTable",
+                                #   label = 'Update Table',
+                                #   icon = NULL,
+                                #   style = "gradient",
+                                #   color = "primary",
+                                #   size = "sm",
+                                #   block = FALSE,
+                                #   no_outline = TRUE
+                                # ),
+
                                 shiny::h5("To save parameters, enter file name and click the Download button:"),
 
                                 shiny::textInput(
-                                  inputId = ns("name"),
+                                  inputId = ns("filename"),
                                   label = "File Name",
                                   value = "params"
                                 ),
@@ -187,26 +197,16 @@ mod_distribDiffModule_ui <- function(id){
                                   color = "primary",
                                 )
 
-                                # shinyWidgets::actionBttn(
-                                #   inputId = "save",
-                                #   label = 'Save Parameters',
-                                #   icon = NULL,
-                                #   style = "gradient",
-                                #   color = "primary",
-                                #   size = "sm",
-                                #   block = FALSE,
-                                #   no_outline = TRUE
-                                # )
                               )
                             ), # END FIRST COLUMN
 
                             shiny::column(
-                              width = 8,
+                              width = 9,
                               shinydashboard::box(width = NULL,
                                                   title = 'Comparing two Bimodal Groups',
                                                   # verbatimTextOutput(ns('description')),
                                                   plotly::plotlyOutput(ns("pplt")),
-                                                  shiny::tableOutput(ns("paramsTable"))
+                                                  DT::dataTableOutput(ns("paramsTable"))
                                                   ) # END box
                               ) # END column
                             ) # END fluidRow
@@ -293,30 +293,32 @@ mod_distribDiffModule_server <- function(id){
     })
 
     paramsTable <- shiny::reactive({
-      data.frame(
+
+      calcOutput <- ss()[['calcs']]
+      # calcOutput$Row <- 1:nrow(calcOutput)
+
+      results <- data.frame(
         Distribution = input$dist,
         Alpha = input$alpha,
         Samples_GroupA = input$n[1],
-        Samples_GroupB = input$n[2]
+        Samples_GroupB = input$n[2],
+        nSim = input$nsim
       )
+
+      calcOutput <- tidyr::pivot_wider(calcOutput, names_from = c('Test', 'variable'), values_from = 'value')
+      tidyr::expand_grid(results, calcOutput)
     })
 
-    output$paramsTable <- shiny::renderTable( paramsTable() )
-
-   # shiny::observeEvent(input$save, {
-   #    write.csv(paramsTable(), "www/params.csv", row.names = F)
-   #  })
-   #
-   # shinyjs::onclick("save", runjs("window.open('params.csv')"))
+    output$paramsTable <- DT::renderDataTable( paramsTable() )
 
     output$downloadParams <- shiny::downloadHandler(
 
       filename = function() {
-        paste0(input$name, ".csv")
+        paste0(input$filename, ".csv")
       },
+
       content = function(file) {
         write.csv(paramsTable(), file, row.names = FALSE)
-        # file.copy(matrix(1:16, nrow = 4), file)
       }
     )
 
