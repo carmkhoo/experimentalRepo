@@ -1,7 +1,7 @@
 Package: shinyBifurcatoR
 Title: shinyBifurcatoR
-Version: 0.1.20220601
-Authors@R: person('Zachary', 'Madaj et al.', email = 'Carmen.Khoo@mainehealth.org', role = c('cre', 'aut'))
+Version: 0.0.0.9000
+Authors@R: person('Zachary', 'Madaj et al.', email = 'carmkhoo@gmail.com', role = c('cre', 'aut'))
 Description: Power Calculations with Simulated Genotype Data.
 License: MIT + file LICENSE
 URL: https://www.github.com/carmkhoo/experimentalRepo
@@ -16,11 +16,14 @@ Imports:
     golem (>= 0.3.2),
     LaplacesDemon,
     mclust,
+    pkgload,
     mousetrap,
     plotly,
     shiny (>= 1.6.0),
     shinydashboard,
-    shinyWidgets
+    shinyWidgets,
+    roxygen2,
+    shinyjs
 Suggests: 
     spelling,
     testthat (>= 3.0.0)
@@ -28,4 +31,4 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 Language: en-US
 LazyData: true
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1

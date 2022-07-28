@@ -16,6 +16,10 @@ app_server <- function(input, output, session) {
       mod_bimodalityModule_server("bimodalityModule")
       # callModule(meanvarServer, 'meanvarMod')
     }
+
+    if (input$tabs == 'distribdiff') {
+      mod_distribDiffModule_server("distribDiffModule")
+    }
   })
 
   output$tabs <- shinydashboard::renderMenu({

@@ -21,7 +21,7 @@ attachment::att_amend_desc()
 ## Create a module infrastructure in R/
 golem::add_module(name = "meanvarModule", with_test = TRUE) # Name of the module
 golem::add_module(name = "bimodalityModule", with_test = TRUE) # Name of the module
-# golem::add_module(name = "name_of_module2", with_test = TRUE) # Name of the module
+golem::add_module(name = "distribDiffModule", with_test = TRUE) # Name of the module
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*
@@ -99,8 +99,10 @@ usethis::use_package("LaplacesDemon")
 usethis::use_package("mclust")
 usethis::use_package("mousetrap")
 usethis::use_package("plotly")
+usethis::use_package("roxygen2")
 usethis::use_package("shiny")
 usethis::use_package("shinydashboard")
+usethis::use_package("shinyjs")
 usethis::use_package("shinyWidgets")
 # usethis::use_github_file("https://github.com/VanAndelInstitute/bifurcatoR/blob/main/R/est_pow_2samp.R")
 remotes::install_github("VanAndelInstitute/bifurcatoR", force = T)
