@@ -16,6 +16,7 @@ mod_meanvarModule_ui <- function(id) {
                             column(
                               width = 3,
                               shinydashboard::box(
+                                width = NULL,
                                 title = 'Parameters',
                                 shinyWidgets::pickerInput(
                                   inputId = ns('dist'),
@@ -108,6 +109,22 @@ mod_meanvarModule_ui <- function(id) {
                                   min = 0,
                                   max = 1,
                                   value = .4
+                                ),
+
+                                shiny::h5("To save parameters, enter file name and click the Download button:"),
+
+                                shiny::textInput(
+                                  inputId = ns("filename"),
+                                  label = "File Name",
+                                  value = "params2"
+                                ),
+
+                                shinyWidgets::downloadBttn(
+                                  outputId = ns("downloadParams"),
+                                  label = "Download",
+                                  style = "gradient",
+                                  color = "primary",
+                                  size = "sm"
                                 )
                               ) # END box
                             ),
@@ -118,7 +135,9 @@ mod_meanvarModule_ui <- function(id) {
                               shinydashboard::box(width = NULL,
                                                   title = 'Testing Mean or Variance Effects',
                                                   # verbatimTextOutput(ns('description')),
-                                                  plotly::plotlyOutput(ns("pplt"))) # END box
+                                                  plotly::plotlyOutput(ns("pplt")),
+                                                  DT::dataTableOutput(ns("paramsTable"))
+                                                  ) # END box
                             ) # END column
                           ) # END fluidRow
                         ) # END tabItem
@@ -166,7 +185,6 @@ mod_meanvarModule_server <- function(id) {
                    list(dens.plot = dens.plot, calcs = calcs)
                  })
 
-
                  output$pplt <- plotly::renderPlotly({
                    p1 = plotly::ggplotly(
                      ggplot2::ggplot() +
@@ -207,11 +225,32 @@ mod_meanvarModule_server <- function(id) {
 
                  })
 
+                 paramsTable <- shiny::reactive({
+
+                   calcOutput <- ss()[['calcs']]
+                   # calcOutput$Row <- 1:nrow(calcOutput)
+
+                   results <- data.frame(
+                     Distribution = input$dist,
+                     nSim = input$nsim
+                   )
+
+                   calcOutput <- tidyr::pivot_wider(calcOutput, names_from = c('Test', 'variable'), values_from = 'value')
+                   tidyr::expand_grid(results, calcOutput)
+                 })
+
+                 output$paramsTable <- DT::renderDataTable( paramsTable() )
+
+                 output$downloadParams <- shiny::downloadHandler(
+
+                   filename = function() {
+                     paste0(input$filename, ".csv")
+                   },
+
+                   content = function(file) {
+                     write.csv(paramsTable(), file, row.names = FALSE)
+                   }
+                 )
+
                })
 }
-
-## To be copied in the UI
-# mod_meanvarModule_ui("meanvarModule_1")
-
-## To be copied in the server
-# mod_meanvarModule_server("meanvarModule_1")

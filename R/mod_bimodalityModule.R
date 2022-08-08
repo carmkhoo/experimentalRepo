@@ -123,6 +123,22 @@ mod_bimodalityModule_ui <- function(id) {
             max = 5000,
             value = 10
           ),
+
+          shiny::h5("To save parameters, enter file name and click the Download button:"),
+
+          shiny::textInput(
+            inputId = ns("filename"),
+            label = "File Name",
+            value = "params1"
+          ),
+
+          shinyWidgets::downloadBttn(
+            outputId = ns("downloadParams"),
+            label = "Download",
+            style = "gradient",
+            color = "primary",
+            size = "sm"
+          )
         ) # END box
       ),
       # END column
@@ -132,7 +148,9 @@ mod_bimodalityModule_ui <- function(id) {
         shinydashboard::box(width = NULL,
                             title = 'Detecting Bimodality',
                             # verbatimTextOutput(ns('description')),
-                            plotly::plotlyOutput(ns("pplt"))) # END box
+                            plotly::plotlyOutput(ns("pplt")),
+                            DT::dataTableOutput(ns("paramsTable"))
+                            ) # END box
       ) # END column
     ) # END fluidRow
   ) # END tabItem
@@ -249,6 +267,33 @@ mod_bimodalityModule_server <- function(id) {
                            margin = c(0.02, 0.02, .21, .21))
 
                  })
+
+                 paramsTable <- shiny::reactive({
+
+                   calcOutput <- ss()[['calcs']]
+                   # calcOutput$Row <- 1:nrow(calcOutput)
+
+                   results <- data.frame(
+                     Distribution = input$dist,
+                     nSim = input$nsim
+                   )
+
+                   calcOutput <- tidyr::pivot_wider(calcOutput, names_from = c('Test', 'variable'), values_from = 'value')
+                   tidyr::expand_grid(results, calcOutput)
+                 })
+
+                 output$paramsTable <- DT::renderDataTable( paramsTable() )
+
+                 output$downloadParams <- shiny::downloadHandler(
+
+                   filename = function() {
+                     paste0(input$filename, ".csv")
+                   },
+
+                   content = function(file) {
+                     write.csv(paramsTable(), file, row.names = FALSE)
+                   }
+                 )
 
                })
 }

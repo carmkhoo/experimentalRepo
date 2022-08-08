@@ -16,6 +16,7 @@ mod_distribDiffModule_ui <- function(id){
                             shiny::column(
                               width = 3,
                               shinydashboard::box(
+                                width = NULL,
                                 title = 'Parameters',
 
                                 shinyWidgets::pickerInput(
@@ -171,23 +172,12 @@ mod_distribDiffModule_ui <- function(id){
                                   )
                                 ),
 
-                                # shinyWidgets::actionBttn(
-                                #   inputId = "updateTable",
-                                #   label = 'Update Table',
-                                #   icon = NULL,
-                                #   style = "gradient",
-                                #   color = "primary",
-                                #   size = "sm",
-                                #   block = FALSE,
-                                #   no_outline = TRUE
-                                # ),
-
                                 shiny::h5("To save parameters, enter file name and click the Download button:"),
 
                                 shiny::textInput(
                                   inputId = ns("filename"),
                                   label = "File Name",
-                                  value = "params"
+                                  value = "params3"
                                 ),
 
                                 shinyWidgets::downloadBttn(
@@ -195,6 +185,7 @@ mod_distribDiffModule_ui <- function(id){
                                   label = "Download",
                                   style = "gradient",
                                   color = "primary",
+                                  size = "sm"
                                 )
 
                               )
@@ -224,22 +215,33 @@ mod_distribDiffModule_server <- function(id){
 
       if(input$dist == "norm"){
         param = list(p_1 = input$p1,p_2=input$p2,
-                     mu1_1 = input$mus1[1],mu2_1 = input$mus1[2],mu1_2 = input$mus2[1],mu2_2 = input$mus2[2],
-                     sd1_1 = input$sds1[1],sd2_1 = input$sds1[2],sd1_2 = input$sds2[1],sd2_2 = input$sds2[2])
+                     mu1_1 = input$mus1[1],
+                     mu2_1 = input$mus1[2],
+                     mu1_2 = input$mus2[1],
+                     mu2_2 = input$mus2[2],
+                     sd1_1 = input$sds1[1],
+                     sd2_1 = input$sds1[2],
+                     sd1_2 = input$sds2[1],
+                     sd2_2 = input$sds2[2])
 
         calcs = reshape2::melt(as.data.frame(est_pow_2samp(input$n[1],
                                                            input$n[2],
                                                            input$alpha,
                                                            input$nsim,
                                                            modes = 2,
-                                                           dist= 'norm',
-                                                           params=param,
-                                                           c(input$meaneff,input$vareff,input$meanvar),
-                                                           input$nperm),id.vars=c("Test")))
+                                                           dist = 'norm',
+                                                           params = param,
+                                                           c(input$meaneff,
+                                                             input$vareff,
+                                                             input$meanvar),
+                                                           input$nperm),
+                                             id.vars=c("Test")))
 
 
-        dens.plot = data.frame(Group=rep("Group A"),var = c(rnorm(ceiling(input$p1*2000),input$mus1[1],input$sds1[1]),rnorm(ceiling((1-input$p1)*2000),input$mus1[2],input$sds1[2])))
-        dens.plot = rbind(dens.plot,data.frame(Group=rep("Group B"),var = c(rnorm(ceiling(input$p2*2000),input$mus2[1],input$sds2[1]),rnorm(ceiling((1-input$p2)*2000),input$mus2[2],input$sds2[2]))))
+        dens.plot = data.frame(Group = rep("Group A"),
+                               var = c(rnorm(ceiling(input$p1*2000),input$mus1[1],input$sds1[1]),rnorm(ceiling((1-input$p1)*2000),input$mus1[2],input$sds1[2])))
+        dens.plot = rbind(dens.plot,data.frame(Group=rep("Group B"),
+                                               var = c(rnorm(ceiling(input$p2*2000),input$mus2[1],input$sds2[1]),rnorm(ceiling((1-input$p2)*2000),input$mus2[2],input$sds2[2]))))
 
       } else {
         if(input$dist == "beta"){
