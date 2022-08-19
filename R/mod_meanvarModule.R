@@ -178,8 +178,16 @@ mod_meanvarModule_server <- function(id) {
 
                    } else {
                      if (input$dist == "Weibull") {
-                       # dens.plot =  data.frame(var = rbeta(2000,input$s1,input$s2))
-                       # calcs =  reshape2::melt(as.data.frame(est_pow(input$n,input$alpha,input$nsim,input$dist,list(s1=input$s1,s2=input$s2),tests=input$checkGroup2)),id.vars=c("N","Test"))
+                           calcs = reshape2::melt(as.data.frame(est_pow_2samp(input$nsize[1], 
+                                                              input$nsize[2], input$alpha, input$nsim, 1, 
+                                                              "norm", list(mean = input$gaussmean, v_scale = input$gaussvar), 
+                                                              c(input$meaneff, input$vareff), input$nperm)), id.vars = c("Test"))
+                            ## Distirbution for the reference group is weibull(1,1), user still enters mean eff and var eff
+                            ## the R package mixdist is then used to get shape and scale paramters from new mean and sd
+                            shape = mixdist::weibullpar(1+input$meaneff,1*input$vareff, loc = 0)$shape
+                            scale = mixdist::weibullpar(1+input$meaneff,1*input$vareff, loc = 0)$scale
+                            dens.plot = data.frame(var = c(rweibull(3000, 1, 1), rweibull(3000,shape=shape,scale=scale )), 
+                                                   Group = c(rep("Genotype 1", 3000), rep("Genotype 2", 3000)))
                      }
                    }
                    list(dens.plot = dens.plot, calcs = calcs)
