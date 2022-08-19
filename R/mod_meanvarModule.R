@@ -185,8 +185,8 @@ mod_meanvarModule_server <- function(id) {
                                                               c(input$meaneff, input$vareff), input$nperm)), id.vars = c("Test"))
                             ## Distirbution for the reference group is weibull(1,1), user still enters mean eff and var eff
                             ## the R package mixdist is then used to get shape and scale paramters from new mean and sd
-                            shape = mixdist::weibullpar(1+input$meaneff,1*input$vareff, loc = 0)$shape
-                            scale = mixdist::weibullpar(1+input$meaneff,1*input$vareff, loc = 0)$scale
+                            shape = mixdist::weibullpar(1+input$gaussmean,1*input$gaussvar, loc = 0)$shape
+                            scale = mixdist::weibullpar(1+input$gaussmean,1*input$gaussvar, loc = 0)$scale
                             dens.plot = data.frame(var = c(rweibull(3000, 1, 1), rweibull(3000,shape=shape,scale=scale )), 
                                                    Group = c(rep("Genotype 1", 3000), rep("Genotype 2", 3000)))
                      }
