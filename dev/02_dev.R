@@ -104,7 +104,6 @@ usethis::use_package("shiny")
 usethis::use_package("shinydashboard")
 usethis::use_package("shinyjs")
 usethis::use_package("shinyWidgets")
-# usethis::use_github_file("https://github.com/VanAndelInstitute/bifurcatoR/blob/main/R/est_pow_2samp.R")
 remotes::install_github("VanAndelInstitute/bifurcatoR", force = T)
 
 # You're now set! ----

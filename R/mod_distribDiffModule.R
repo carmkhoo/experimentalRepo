@@ -155,7 +155,7 @@ mod_distribDiffModule_ui <- function(id){
                                     inputId = ns('meaneff'),
                                     label = 'Mean Methods',
                                     choices = c('ANOVA',
-                                                'Permutation (Raw)'),
+                                                'Permutations (Raw)'),
                                     selected = 'ANOVA'
                                   )
                                 ),
@@ -166,8 +166,8 @@ mod_distribDiffModule_ui <- function(id){
                                     inputId = ns('vareff'),
                                     label = 'Variance Methods',
                                     choices = c('Levene',
-                                                'Permutation (MAD)',
-                                                'Permutation (Gini Index)'),
+                                                'Permutations (MAD)'),
+                                                # 'Permutation (Gini Index)'),
                                     selected = 'Levene'
                                   )
                                 ),
@@ -234,7 +234,7 @@ mod_distribDiffModule_server <- function(id){
                                                            c(input$meaneff,
                                                              input$vareff,
                                                              input$meanvar),
-                                                           input$nperm),
+                                                             input$nperm),
                                              id.vars=c("Test")))
 
 
@@ -294,21 +294,34 @@ mod_distribDiffModule_server <- function(id){
 
     })
 
+    # Initialize table of parameters
+    init_tbl <- data.frame(
+      Distribution = character(),
+      nSim = numeric(),
+      Test = character(),
+      Variable = character(),
+      Value = numeric()
+    )
+
     paramsTable <- shiny::reactive({
 
       calcOutput <- ss()[['calcs']]
-      # calcOutput$Row <- 1:nrow(calcOutput)
+      # observeEvent(input$meaneff, {
 
-      results <- data.frame(
-        Distribution = input$dist,
-        Alpha = input$alpha,
-        Samples_GroupA = input$n[1],
-        Samples_GroupB = input$n[2],
-        nSim = input$nsim
+      calcOutput <- ss()[['calcs']]
+      # calcOutput
+      tbl_row <- nrow(calcOutput)
+      tbl <- data.frame(
+        Distribution = rep(input$dist, tbl_row),
+        nSim = rep(input$nsim, tbl_row),
+        Test = calcOutput$Test,
+        Variable = calcOutput$variable,
+        Value = calcOutput$value
       )
+      tbl <- tbl[order(tbl$Test),]
+      rbind(init_tbl, tbl)
+      # })
 
-      calcOutput <- tidyr::pivot_wider(calcOutput, names_from = c('Test', 'variable'), values_from = 'value')
-      tidyr::expand_grid(results, calcOutput)
     })
 
     output$paramsTable <- DT::renderDataTable( paramsTable() )

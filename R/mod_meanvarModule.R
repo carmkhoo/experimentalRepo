@@ -86,7 +86,7 @@ mod_meanvarModule_ui <- function(id) {
                                     inputId = ns('meaneff'),
                                     label = 'Mean Methods',
                                     choices = c('ANOVA',
-                                                'Permutation (Raw)'),
+                                                'Permutations (Raw)'),
                                     selected = 'ANOVA'
                                   )
                                 ),
@@ -97,8 +97,8 @@ mod_meanvarModule_ui <- function(id) {
                                     inputId = ns('vareff'),
                                     label = 'Variance Methods',
                                     choices = c('Levene',
-                                                'Permutation (MAD)',
-                                                'Permutation (Gini Index)'),
+                                                'Permutations (MAD)',
+                                                'Permutations (Gini Index)'),
                                     selected = 'Levene'
                                   )
                                 ),
@@ -134,9 +134,10 @@ mod_meanvarModule_ui <- function(id) {
                               width = 9,
                               shinydashboard::box(width = NULL,
                                                   title = 'Testing Mean or Variance Effects',
-                                                  # verbatimTextOutput(ns('description')),
+                                                  verbatimTextOutput(ns('description')),
                                                   plotly::plotlyOutput(ns("pplt")),
-                                                  DT::dataTableOutput(ns("paramsTable"))
+                                                  DT::dataTableOutput(ns("paramsTable")),
+                                                  shiny::textOutput(ns("testPrint"))
                                                   ) # END box
                             ) # END column
                           ) # END fluidRow
@@ -225,19 +226,36 @@ mod_meanvarModule_server <- function(id) {
 
                  })
 
+                 # Initialize table of parameters
+                 init_tbl <- data.frame(
+                   Distribution = character(),
+                   nSim = numeric(),
+                   Test = character(),
+                   Variable = character(),
+                   Value = numeric()
+                 )
+
                  paramsTable <- shiny::reactive({
 
-                   calcOutput <- ss()[['calcs']]
-                   # calcOutput$Row <- 1:nrow(calcOutput)
+                   # observeEvent(input$meaneff, {
 
-                   results <- data.frame(
-                     Distribution = input$dist,
-                     nSim = input$nsim
-                   )
+                     calcOutput <- ss()[['calcs']]
+                     # calcOutput
+                     tbl_row <- nrow(calcOutput)
+                     tbl <- data.frame(
+                       Distribution = rep(input$dist, tbl_row),
+                       nSim = rep(input$nsim, tbl_row),
+                       Test = calcOutput$Test,
+                       Variable = calcOutput$variable,
+                       Value = calcOutput$value
+                     )
+                     tbl <- tbl[order(tbl$Test),]
+                     rbind(init_tbl, tbl)
+                   # })
 
-                   calcOutput <- tidyr::pivot_wider(calcOutput, names_from = c('Test', 'variable'), values_from = 'value')
-                   tidyr::expand_grid(results, calcOutput)
                  })
+
+                 output$testPrint <- shiny::renderPrint( c(input$meaneff, input$vareff) ) # ss()[["calcs"]]
 
                  output$paramsTable <- DT::renderDataTable( paramsTable() )
 
