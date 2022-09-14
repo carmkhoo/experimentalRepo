@@ -39,66 +39,33 @@ mod_bimodalityModule_ui <- function(id) {
                       c(
                         "Gaussian" = "norm",
                         "Beta" = "beta"
+                        "Weibull" = "weib"
                       )),
 
           conditionalPanel(
             condition = sprintf('input["%s"] == "norm"', ns("dist")),
-            numericInput(
-              ns("mu1"),
-              label = "Mean of mode 1",
-              value = 0,
-              min = NA,
-              max = NA
-            ),
-            numericInput(
-              ns("sd1"),
-              label = "SD of mode 1",
-              value = 1,
-              min = NA,
-              max = NA
-            ),
-            numericInput(
-              ns("mu2"),
-              label = "Mean of mode 2",
-              value = 3,
-              min = NA,
-              max = NA
-            ),
-            numericInput(
-              ns("sd2"),
-              label = "SD of mode 2",
-              value = 1,
-              min = NA,
-              max = NA
-            ),
-            sliderInput(
-              ns("p"),
-              label = "Proportion in mode 1",
-              min = 0.01,
-              max = 0.99,
-              value = .5,
-              step = .01
-            )
-          ),
-
-          conditionalPanel(
-            condition = sprintf('input["%s"] == "beta"', ns("dist")),
-            numericInput(
-              ns("s1"),
-              label = "Shape parameter 1",
-              value = .5,
-              min = NA,
-              max = NA
-            ),
-            numericInput(
-              ns("s2"),
-              label = "Shape parameter 2",
-              value = .5,
-              min = NA,
-              max = NA
-            )
-          ),
-
+                               sliderInput(ns("p"),
+                                           label = "Proportion in mode 1",min = 0.01, max = 0.99, value = .5, step = .01),
+                               sliderInput(ns("mu"),
+                                            label="Mean of mode 1 and mode 2", value=c(0,1), min = 0, max = 100),
+                               sliderInput(ns("sd"),
+                                            label="SD of mode 1 and mode 2", value=c(1,2), min = 1, max = 10)
+                          ),
+              
+           conditionalPanel(
+             condition = sprintf('input["%s"] == "beta"', ns("dist")),
+                               sliderInput(ns("sp"),
+                                            label="Shape parameters", value=c(.5,.75), min = .05, max = 10,step=0.05)
+                           ),
+              
+           conditionalPanel(
+             condition = sprintf('input["%s"] == "weib"', ns("dist")),
+                               sliderInput(ns("sp"),
+                                            label="Shape parameters of modes 1 and 2", value=c(1,.75), min = .05, max = 100,step=0.05),
+             
+                               sliderInput(ns("sc"),
+                                            label="Scale parameters of modes 1 and 2", value=c(1,.75), min = .05, max = 100,step=0.05)
+                           ),
 
           ##Commented out because sigclust is being a bear
           # checkboxGroupInput("checkGroup2", label = ("Must select one or more Test"), choices = list("Hartigans' dip test"="dip","Mclust"="mclust","2-Mean cluster"="sigclust","Laplace"="isbimo","Mouse Trap"="mt"),selected="dip"),
