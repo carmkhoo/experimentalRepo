@@ -38,26 +38,13 @@ mod_bimodalityModule_ui <- function(id) {
           selectInput(ns("dist"), label = "Distribution",
                       c(
                         "Gaussian" = "norm",
-                        "Beta" = "beta"
+                        "Beta" = "beta",
+                        "Weibull" = "weib
                       )),
 
           conditionalPanel(
             condition = sprintf('input["%s"] == "norm"', ns("dist")),
-#            numericInput(
-#              ns("mu1"),
-#              label = "Mean of mode 1",
-#              value = 0,
-#              min = NA,
-#              max = NA
-#            ),
-#            numericInput(
-#              ns("sd1"),
-#              label = "SD of mode 1",
-#              value = 1,
-#              min = NA,
-#              max = NA
-#            ),
-            
+
             sliderInput(
               ns("mu"),
               label = "Means of Mode 1 and Mode 2",
@@ -74,20 +61,35 @@ mod_bimodalityModule_ui <- function(id) {
               max = 50
             ),
             
-#            numericInput(
-#              ns("mu2"),
-#              label = "Mean of mode 2",
-#              value = 3,
-#              min = NA,
-#              max = NA
-#            ),
-#            numericInput(
-#              ns("sd2"),
-#              label = "SD of mode 2",
-#              value = 1,
-#              min = NA,
-#              max = NA
-#            ),
+            sliderInput(
+              ns("p"),
+              label = "Proportion in mode 1",
+              min = 0.01,
+              max = 0.99,
+              value = .5,
+              step = .01
+            )
+          ),
+
+         conditionalPanel(
+            condition = sprintf('input["%s"] == "weib"', ns("dist")),
+
+            sliderInput(
+              ns("sp"),
+              label = "Shape parameters of Mode 1 and Mode 2",
+              value = c(0.5,3),
+              min = 0.01,
+              max = 50
+            ),
+
+            sliderInput(
+              ns("sc"),
+              label = "Shape parameters of Mode 1 and Mode 2",
+              value = c(0.5,3),
+              min = 0.01,
+              max = 50
+            ),
+            
             sliderInput(
               ns("p"),
               label = "Proportion in mode 1",
@@ -100,20 +102,6 @@ mod_bimodalityModule_ui <- function(id) {
 
           conditionalPanel(
             condition = sprintf('input["%s"] == "beta"', ns("dist")),
-#            numericInput(
-#              ns("s1"),
-#              label = "Shape parameter 1",
-#              value = .5,
-#              min = NA,
-#              max = NA
-#            ),
-#            numericInput(
-#              ns("s2"),
-#              label = "Shape parameter 2",
-#              value = .5,
-#              min = NA,
-#              max = NA
-#            )
             sliderInput(
               ns("s"),
               label = "Shape parameters 1 and 2",
@@ -237,7 +225,7 @@ mod_bimodalityModule_server <- function(id) {
                      ))
 
 
-                   } else {
+                   } else if {
                      if (input$dist == "beta") {
                        dens.plot =  data.frame(var = rbeta(2000, input$s[1], input$s[2]))
                        calcs =  reshape2::melt(as.data.frame(
@@ -251,6 +239,32 @@ mod_bimodalityModule_server <- function(id) {
                          )
                        ), id.vars = c("N", "Test"))
                      }
+                   } else {
+                   if (input$dist == "norm") {
+                     calcs =  reshape2::melt(as.data.frame(
+                       bifurcatoR::est_pow(
+                         input$n,
+                         input$alpha,
+                         input$nsim,
+                         input$dist,
+                         list(
+                           p = input$p,
+                           sp1 = input$sp[1],
+                           sc1 = input$sc[1],
+                           sp2 = input$sp[2],
+                           sc2 = input$sc[2]
+                         ),
+                         tests = input$checkGroup2
+                       )
+                     ), id.vars = c("N", "Test"))
+
+                     dens.plot = data.frame(var = c(
+                       rweibull(ceiling(input$p * 2000), input$sp[1], input$sc[1]),
+                       rweibull(ceiling((1 - input$p) * 2000), input$sp[2], input$sc[2])
+                     ))
+
+                   }
+
                    }
                    list(dens.plot = dens.plot, calcs = calcs)
                  })
