@@ -43,34 +43,51 @@ mod_bimodalityModule_ui <- function(id) {
 
           conditionalPanel(
             condition = sprintf('input["%s"] == "norm"', ns("dist")),
-            numericInput(
-              ns("mu1"),
-              label = "Mean of mode 1",
-              value = 0,
-              min = NA,
-              max = NA
+#            numericInput(
+#              ns("mu1"),
+#              label = "Mean of mode 1",
+#              value = 0,
+#              min = NA,
+#              max = NA
+#            ),
+#            numericInput(
+#              ns("sd1"),
+#              label = "SD of mode 1",
+#              value = 1,
+#              min = NA,
+#              max = NA
+#            ),
+            
+            sliderInput(
+              na("mu),
+              label = "Means of Mode 1 and Mode 2",
+              value = c(0,3),
+              min = 0,
+              max = 50
             ),
-            numericInput(
-              ns("sd1"),
-              label = "SD of mode 1",
-              value = 1,
-              min = NA,
-              max = NA
+
+            sliderInput(
+              na("sd),
+              label = "SDs of Mode 1 and Mode 2",
+              value = c(1,3),
+              min = 0.01,
+              max = 50
             ),
-            numericInput(
-              ns("mu2"),
-              label = "Mean of mode 2",
-              value = 3,
-              min = NA,
-              max = NA
-            ),
-            numericInput(
-              ns("sd2"),
-              label = "SD of mode 2",
-              value = 1,
-              min = NA,
-              max = NA
-            ),
+            
+#            numericInput(
+#              ns("mu2"),
+#              label = "Mean of mode 2",
+#              value = 3,
+#              min = NA,
+#              max = NA
+#            ),
+#            numericInput(
+#              ns("sd2"),
+#              label = "SD of mode 2",
+#              value = 1,
+#              min = NA,
+#              max = NA
+#            ),
             sliderInput(
               ns("p"),
               label = "Proportion in mode 1",
@@ -83,20 +100,27 @@ mod_bimodalityModule_ui <- function(id) {
 
           conditionalPanel(
             condition = sprintf('input["%s"] == "beta"', ns("dist")),
-            numericInput(
-              ns("s1"),
-              label = "Shape parameter 1",
-              value = .5,
-              min = NA,
-              max = NA
+#            numericInput(
+#              ns("s1"),
+#              label = "Shape parameter 1",
+#              value = .5,
+#              min = NA,
+#              max = NA
+#            ),
+#            numericInput(
+#              ns("s2"),
+#              label = "Shape parameter 2",
+#              value = .5,
+#              min = NA,
+#              max = NA
+#            )
+                        sliderInput(
+              na("s),
+              label = "Shape parameters 1 and 2",
+              value = c(0.5,0.5),
+              min = 0.01,
+              max = 50
             ),
-            numericInput(
-              ns("s2"),
-              label = "Shape parameter 2",
-              value = .5,
-              min = NA,
-              max = NA
-            )
           ),
 
 
@@ -198,31 +222,31 @@ mod_bimodalityModule_server <- function(id) {
                          input$dist,
                          list(
                            p = input$p,
-                           mu1 = input$mu1,
-                           sd1 = input$sd1,
-                           mu2 = input$mu2,
-                           sd2 = input$sd2
+                           mu1 = input$mu[1],
+                           sd1 = input$sd[1],
+                           mu2 = input$mu[2],
+                           sd2 = input$sd[2]
                          ),
                          tests = input$checkGroup2
                        )
                      ), id.vars = c("N", "Test"))
 
                      dens.plot = data.frame(var = c(
-                       rnorm(ceiling(input$p * 2000), input$mu1, input$sd1),
-                       rnorm(ceiling((1 - input$p) * 2000), input$mu2, input$sd2)
+                       rnorm(ceiling(input$p * 2000), input$mu[1], input$sd[1]),
+                       rnorm(ceiling((1 - input$p) * 2000), input$mu[2], input$sd[2])
                      ))
 
 
                    } else {
                      if (input$dist == "beta") {
-                       dens.plot =  data.frame(var = rbeta(2000, input$s1, input$s2))
+                       dens.plot =  data.frame(var = rbeta(2000, input$s[1], input$s[2]))
                        calcs =  reshape2::melt(as.data.frame(
                          bifurcatoR::est_pow(
                            input$n,
                            input$alpha,
                            input$nsim,
                            input$dist,
-                           list(s1 = input$s1, s2 = input$s2),
+                           list(s1 = input$s[1], s2 = input$s[2]),
                            tests = input$checkGroup2
                          )
                        ), id.vars = c("N", "Test"))
