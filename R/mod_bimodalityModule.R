@@ -225,7 +225,7 @@ mod_bimodalityModule_server <- function(id) {
                      ))
 
 
-                   } else if {
+                   } else {
                      if (input$dist == "beta") {
                        dens.plot =  data.frame(var = rbeta(2000, input$s[1], input$s[2]))
                        calcs =  reshape2::melt(as.data.frame(
@@ -238,33 +238,31 @@ mod_bimodalityModule_server <- function(id) {
                            tests = input$checkGroup2
                          )
                        ), id.vars = c("N", "Test"))
-                     }
-                   } else {
-                   if (input$dist == "weib") {
-                     calcs =  reshape2::melt(as.data.frame(
-                       bifurcatoR::est_pow(
-                         input$n,
-                         input$alpha,
-                         input$nsim,
-                         input$dist,
-                         list(
-                           p = input$p,
-                           sp1 = input$sp[1],
-                           sc1 = input$sc[1],
-                           sp2 = input$sp[2],
-                           sc2 = input$sc[2]
-                         ),
-                         tests = input$checkGroup2
-                       )
-                     ), id.vars = c("N", "Test"))
+                     } else {
+                      if (input$dist == "weib") {
+                       calcs =  reshape2::melt(as.data.frame(
+                           bifurcatoR::est_pow(
+                            input$n,
+                            input$alpha,
+                            input$nsim,
+                            input$dist,
+                            list(
+                              p = input$p,
+                              sp1 = input$sp[1],
+                              sc1 = input$sc[1],
+                              sp2 = input$sp[2],
+                              sc2 = input$sc[2]
+                             ),
+                            tests = input$checkGroup2
+                           )
+                         ), id.vars = c("N", "Test"))
 
-                     dens.plot = data.frame(var = c(
-                       rweibull(ceiling(input$p * 2000), input$sp[1], input$sc[1]),
-                       rweibull(ceiling((1 - input$p) * 2000), input$sp[2], input$sc[2])
-                     ))
-
-                   }
-
+                        dens.plot = data.frame(var = c(
+                        rweibull(ceiling(input$p * 2000), input$sp[1], input$sc[1]),
+                        rweibull(ceiling((1 - input$p) * 2000), input$sp[2], input$sc[2])
+                      ))
+                      }
+                    }
                    }
                    list(dens.plot = dens.plot, calcs = calcs)
                  })
