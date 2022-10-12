@@ -39,7 +39,7 @@ mod_bimodalityModule_ui <- function(id) {
                       c(
                         "Gaussian" = "norm",
                         "Beta" = "beta",
-                        "Weibull" = "weib
+                        "Weibull" = "weib"
                       )),
 
           conditionalPanel(
@@ -85,7 +85,7 @@ mod_bimodalityModule_ui <- function(id) {
             sliderInput(
               ns("sc"),
               label = "Shape parameters of Mode 1 and Mode 2",
-              value = c(0.5,3),
+              value = c(1,3),
               min = 0.01,
               max = 50
             ),
