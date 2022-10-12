@@ -114,13 +114,13 @@ mod_bimodalityModule_ui <- function(id) {
 #              min = NA,
 #              max = NA
 #            )
-                        sliderInput(
-              na("s"),
+            sliderInput(
+              ns("s"),
               label = "Shape parameters 1 and 2",
               value = c(0.5,0.5),
               min = 0.01,
               max = 50
-            ),
+            )
           ),
 
 
