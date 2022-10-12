@@ -59,7 +59,7 @@ mod_bimodalityModule_ui <- function(id) {
 #            ),
             
             sliderInput(
-              na("mu"),
+              ns("mu"),
               label = "Means of Mode 1 and Mode 2",
               value = c(0,3),
               min = 0,
@@ -67,7 +67,7 @@ mod_bimodalityModule_ui <- function(id) {
             ),
 
             sliderInput(
-              na("sd"),
+              ns("sd"),
               label = "SDs of Mode 1 and Mode 2",
               value = c(1,3),
               min = 0.01,
