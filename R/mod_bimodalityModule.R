@@ -240,7 +240,7 @@ mod_bimodalityModule_server <- function(id) {
                        ), id.vars = c("N", "Test"))
                      }
                    } else {
-                   if (input$dist == "norm") {
+                   if (input$dist == "weib") {
                      calcs =  reshape2::melt(as.data.frame(
                        bifurcatoR::est_pow(
                          input$n,
