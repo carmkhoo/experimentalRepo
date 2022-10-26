@@ -84,7 +84,7 @@ mod_bimodalityModule_ui <- function(id) {
 
             sliderInput(
               ns("sc"),
-              label = "Shape parameters of Mode 1 and Mode 2",
+              label = "Scale parameters of Mode 1 and Mode 2",
               value = c(1,3),
               min = 0.01,
               max = 50
