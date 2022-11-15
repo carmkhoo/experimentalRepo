@@ -136,30 +136,30 @@ mod_distribDiffModule_ui <- function(id){
                                   shiny::sliderInput(
                                     ns("sps1"),
                                     label = "Shape parameter of mode 1 and mode 2 group A",
-                                    value = c(0.5, 1),
-                                    min = 0.0001,
-                                    max = 100
+                                    value = c(1, 1.5),
+                                    min = 0.01,
+                                    max = 10
                                   ),
                                   shiny::sliderInput(
                                     ns("scs1"),
                                     label = "Scale parameter of mode 1 and mode 2 group A",
-                                    value = c(1, 0.5),
-                                    min = 0.0001,
-                                    max = 100
+                                    value = c(1, 5),
+                                    min = 0.01,
+                                    max = 10
                                   ),
                                   shiny::sliderInput(
                                     ns("sps2"),
                                     label = "Shape parameter of mode 1 and mode 2 group B",
-                                    value = c(.25, 2),
-                                    min = 0.0001,
-                                    max = 100
+                                    value = c(2, 3),
+                                    min = 0.01,
+                                    max = 10
                                   ),
                                   shiny::sliderInput(
                                     ns("scs2"),
                                     label = "Scale parameter of mode 1 and mode 2 group B",
-                                    value = c(2, .25),
-                                    min = 0.0001,
-                                    max = 100
+                                    value = c(2, 10),
+                                    min = 0.01,
+                                    max = 10
                                   )
                                 ),
                                 
