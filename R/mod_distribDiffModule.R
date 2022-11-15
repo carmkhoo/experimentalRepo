@@ -326,7 +326,7 @@ mod_distribDiffModule_server <- function(id){
                                                                input$alpha,
                                                                input$nsim,
                                                                modes = 2,
-                                                               dist = 'norm',
+                                                               dist = 'weib',
                                                                params = param,
                                                                c(input$meaneff,
                                                                  input$vareff,
