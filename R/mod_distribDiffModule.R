@@ -313,12 +313,12 @@ mod_distribDiffModule_server <- function(id){
           if(input$dist == "weib"){
             param = list(p_1 = input$p1,p_2=input$p2,
                          sp1_1 = input$sps1[1],
-                         sp2_1 = input$sps1[2],
-                         sc1_2 = input$scs2[1],
-                         sc2_2 = input$scs2[2],
-                         sp1_1 = input$sps1[1],
-                         sp2_1 = input$sps1[2],
-                         sc1_2 = input$scs2[1],
+                         sp1_2 = input$sps1[2],
+                         sc1_1 = input$scs1[1],
+                         sc1_2 = input$scs1[2],
+                         sp2_1 = input$sps2[1],
+                         sp2_2 = input$sps2[2],
+                         sc2_1 = input$scs2[1],
                          sc2_2 = input$scs2[2])
             
             calcs = reshape2::melt(as.data.frame(est_pow_2samp(input$n[1],
