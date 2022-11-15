@@ -181,7 +181,7 @@ mod_meanvarModule_server <- function(id) {
                      if (input$dist == "Weibull") {
                            calcs = reshape2::melt(as.data.frame(est_pow_2samp(input$nsize[1], 
                                                               input$nsize[2], input$alpha, input$nsim, 1, 
-                                                              "norm", list(mean = input$gaussmean, v_scale = input$gaussvar), 
+                                                              "weib", list(mean = input$gaussmean, v_scale = input$gaussvar), 
                                                               c(input$meaneff, input$vareff), input$nperm)), id.vars = c("Test"))
                             ## Distirbution for the reference group is weibull(1,1), user still enters mean eff and var eff
                             ## the R package mixdist is then used to get shape and scale paramters from new mean and sd
