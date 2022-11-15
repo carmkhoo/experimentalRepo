@@ -122,16 +122,16 @@ mod_distribDiffModule_ui <- function(id){
                                     label = "Proportion in mode 1 group A",
                                     min = 0.01,
                                     max = 0.99,
-                                    value = .5,
-                                    step = .01
+                                    value = 0.5,
+                                    step = 0.01
                                   ),
                                   shiny::sliderInput(
                                     ns("p2"),
                                     label = "Proportion in mode 1 group B",
                                     min = 0.01,
                                     max = 0.99,
-                                    value = .5,
-                                    step = .01
+                                    value = 0.5,
+                                    step = 0.01
                                   ),
                                   shiny::sliderInput(
                                     ns("sps1"),
@@ -144,21 +144,21 @@ mod_distribDiffModule_ui <- function(id){
                                     ns("scs1"),
                                     label = "Scale parameter of mode 1 and mode 2 group A",
                                     value = c(0.5, 0.5),
-                                    min = .0001,
+                                    min = 0.0001,
                                     max = 100
                                   ),
                                   shiny::sliderInput(
                                     ns("sps2"),
-                                    label = "Shape parameter of mode 1 and mode 2 group A",
+                                    label = "Shape parameter of mode 1 and mode 2 group B",
                                     value = c(2, 10),
                                     min = 0.0001,
                                     max = 100
                                   ),
                                   shiny::sliderInput(
                                     ns("scs2"),
-                                    label = "Scale parameter of mode 1 and mode 2 group A",
-                                    value = c(.5, 2),
-                                    min = .0001,
+                                    label = "Scale parameter of mode 1 and mode 2 group B",
+                                    value = c(0.5, 2),
+                                    min = 0.0001,
                                     max = 100
                                   )
                                 ),
