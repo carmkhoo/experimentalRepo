@@ -356,6 +356,7 @@ mod_distribDiffModule_server <- function(id){
                               ggplot2::theme_classic(14) +
                               ggplot2::ylab("Population density") +
                               ggplot2::xlab("Modes") +
+                              ggplot2::coord_cartesian(xlim = c(0,20)) +
                               ggplot2::theme(legend.title = ggplot2::element_blank()) +
                               ggplot2::scale_color_manual(values=c("black","blue")))
       fig1 = plotly::ggplotly(p1)
