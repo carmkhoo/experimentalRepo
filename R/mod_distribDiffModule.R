@@ -98,7 +98,7 @@ mod_distribDiffModule_ui <- function(id){
                                 shiny::conditionalPanel(
                                   condition = sprintf('input["%s"] == "beta"', ns("dist")),
                                   shiny::sliderInput(
-                                    ns("sps1"),
+                                    ns("sp1"),
                                     label = "Shape parameters group A",
                                     value = c(.5, .75),
                                     min = .05,
@@ -106,7 +106,7 @@ mod_distribDiffModule_ui <- function(id){
                                     step = 0.05
                                   ),
                                   shiny::sliderInput(
-                                    ns("sps2"),
+                                    ns("sp2"),
                                     label = "Shape parameters group B",
                                     value = c(.25, 1),
                                     min = .05,
@@ -296,10 +296,10 @@ mod_distribDiffModule_server <- function(id){
         
       } else {
         if(input$dist == "beta"){
-          dens.plot =  data.frame(Group=rep("Group A"),var = rbeta(2000,input$sps1[1],input$sps1[2]))
-          dens.plot =  rbind(dens.plot,data.frame(Group=rep("Group B"),var = rbeta(2000,input$sps2[1],input$sps2[2])))
-          param = list(s1_1 = input$sps1[1],s2_1 = input$sps1[2],
-                       s1_2 = input$sps2[1],s2_2 = input$sps2[2])
+          dens.plot =  data.frame(Group=rep("Group A"),var = rbeta(2000,input$sp1[1],input$sp1[2]))
+          dens.plot =  rbind(dens.plot,data.frame(Group=rep("Group B"),var = rbeta(2000,input$sp2[1],input$sp2[2])))
+          param = list(s1_1 = input$sp1[1],s2_1 = input$sp1[2],
+                       s1_2 = input$sp2[1],s2_2 = input$sp2[2])
           
           calcs =  reshape2::melt(as.data.frame(est_pow_2samp(input$n[1],
                                                               input$n[2],
@@ -356,7 +356,6 @@ mod_distribDiffModule_server <- function(id){
                               ggplot2::theme_classic(14) +
                               ggplot2::ylab("Population density") +
                               ggplot2::xlab("Modes") +
-                              ggplot2::coord_cartesian(xlim = c(0,20)) +
                               ggplot2::theme(legend.title = ggplot2::element_blank()) +
                               ggplot2::scale_color_manual(values=c("black","blue")))
       fig1 = plotly::ggplotly(p1)
