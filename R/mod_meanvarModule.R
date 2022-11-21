@@ -86,6 +86,7 @@ mod_meanvarModule_ui <- function(id) {
                                     inputId = ns('meaneff'),
                                     label = 'Mean Methods',
                                     choices = c('ANOVA',
+                                                'Non-parametric ANOVA',
                                                 'Permutations (Raw)'),
                                     selected = 'ANOVA'
                                   )
