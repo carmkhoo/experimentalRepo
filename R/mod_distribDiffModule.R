@@ -207,7 +207,7 @@ mod_distribDiffModule_ui <- function(id){
                                     choices = c('ANOVA',
                                                 'Non-parametric ANOVA',
                                                 'Permutations (Raw)'),
-                                    selected = 'ANOVA'NonpANOVA
+                                    selected = 'ANOVA'
                                   )
                                 ),
                                 
