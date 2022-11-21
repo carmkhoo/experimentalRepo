@@ -321,7 +321,6 @@ mod_distribDiffModule_server <- function(id){
                          sc1_2 = input$scs2[1],
                          sc2_2 = input$scs2[2])
             
-            print(unlist(param))
             
             calcs = reshape2::melt(as.data.frame(est_pow_2samp(input$n[1],
                                                                input$n[2],
