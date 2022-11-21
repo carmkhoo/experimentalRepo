@@ -338,9 +338,9 @@ mod_distribDiffModule_server <- function(id){
             
             
             dens.plot = data.frame(Group = rep("Group A"),
-                                   var = c(rweibull(ceiling(input$p1*2000),shape = input$sps1[1],scale = input$scs1[1]),rweibull(ceiling((1-input$p1)*2000),shape = input$sps1[2],scale = input$scs1[2])))
+                                   var = c(rweibull(n=ceiling(input$p1*2000),shape = input$sps1[1],scale = input$scs1[1]),rweibull(n=ceiling((1-input$p1)*2000),shape = input$sps1[2],scale = input$scs1[2])))
             dens.plot = rbind(dens.plot,data.frame(Group=rep("Group B"),
-                                                   var = c(rweibull(ceiling(input$p2*2000),shape = input$sps2[1],scale = input$scs2[1]),rweibull(ceiling((1-input$p2)*2000),shape = input$sps2[2],scale = input$scs2[2]))))
+                                                   var = c(rweibull(n=ceiling(input$p2*2000),shape = input$sps2[1],scale = input$scs2[1]),n=rweibull(ceiling((1-input$p2)*2000),shape = input$sps2[2],scale = input$scs2[2]))))
 
           }
         }
