@@ -123,7 +123,7 @@ mod_bimodalityModule_ui <- function(id) {
               "Hartigans' dip test" = "dip",
               "Mclust" = "mclust",
 #              "Laplace" = "isbimo",
-              "Mouse Trap" = "mt"
+              "Bimodality Coefficient" = "mt"
             ),
             selected = "dip"
           ),
