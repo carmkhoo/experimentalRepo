@@ -122,7 +122,7 @@ mod_bimodalityModule_ui <- function(id) {
             choices = list(
               "Hartigans' dip test" = "dip",
               "Mclust" = "mclust",
-              "Laplace" = "isbimo",
+#              "Laplace" = "isbimo",
               "Mouse Trap" = "mt"
             ),
             selected = "dip"
