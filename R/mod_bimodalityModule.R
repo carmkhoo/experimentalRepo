@@ -135,6 +135,14 @@ mod_bimodalityModule_ui <- function(id) {
             max = 5000,
             value = 10
           ),
+          
+          numericInput(
+            ns("nboot"),
+            label = "Number of bootstraps",
+            min = 10,
+            max = 5000,
+            value = 100
+          ),
 
           shiny::h5("To save parameters, enter file name and click the Download button:"),
 
@@ -215,7 +223,8 @@ mod_bimodalityModule_server <- function(id) {
                            mu2 = input$mu[2],
                            sd2 = input$sd[2]
                          ),
-                         tests = input$checkGroup2
+                         tests = input$checkGroup2,
+                         nboot = input$nboot
                        )
                      ), id.vars = c("N", "Test"))
 
@@ -235,7 +244,8 @@ mod_bimodalityModule_server <- function(id) {
                            input$nsim,
                            input$dist,
                            list(s1 = input$s[1], s2 = input$s[2]),
-                           tests = input$checkGroup2
+                           tests = input$checkGroup2,
+                           nboot = input$nboot
                          )
                        ), id.vars = c("N", "Test"))
                      } else {
@@ -253,7 +263,8 @@ mod_bimodalityModule_server <- function(id) {
                               sp2 = input$sp[2],
                               sc2 = input$sc[2]
                              ),
-                            tests = input$checkGroup2
+                            tests = input$checkGroup2,
+                            nboot = input$nboot
                            )
                          ), id.vars = c("N", "Test"))
 
