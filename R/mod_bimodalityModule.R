@@ -122,8 +122,12 @@ mod_bimodalityModule_ui <- function(id) {
             choices = list(
               "Hartigans' dip test" = "dip",
               "Mclust" = "mclust",
-#              "Laplace" = "isbimo",
-              "Bimodality Coefficient" = "mt"
+              "Bimodality Coefficient" = "mt",
+              "Silverman Bandwidth test" = "SI",
+              "Hall and York Bandwidth test" = "HY",
+              "Cheng and Hall Excess Mass" = "CH",
+              "Ameijeiras-Alonso et al. Excess Mass" = "ACR",
+              "Fisher and Marron Carmer-von Mises" = "FM"
             ),
             selected = "dip"
           ),
