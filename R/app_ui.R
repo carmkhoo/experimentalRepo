@@ -18,7 +18,8 @@ app_ui <- function(request) {
           id = 'tabs',
           shinydashboard::menuItem('Mean/Variance Effect Tests', tabName = 'meanvar'),
           shinydashboard::menuItem('Bimodality Tests', tabName = 'bimodal'),
-          shinydashboard::menuItem('Distribution Tests', tabName = 'distribdiff')
+          shinydashboard::menuItem('Distribution Tests', tabName = 'distribdiff'),
+          shinydashboard::menuItem('Analyze Data', tabName = 'analysis')
         ) # END sidebarMenu
       ), # END dashboardSidebar,
       body = shinydashboard::dashboardBody(
@@ -30,7 +31,9 @@ app_ui <- function(request) {
         shinydashboard::tabItems(
           shinydashboard::tabItem(tabName = 'meanvar', mod_meanvarModule_ui('meanvarModule')),
           shinydashboard::tabItem(tabName = 'bimodal', mod_bimodalityModule_ui('bimodalityModule')),
-          shinydashboard::tabItem(tabName = 'distribdiff', mod_distribDiffModule_ui('distribDiffModule'))
+          shinydashboard::tabItem(tabName = 'distribdiff', mod_distribDiffModule_ui('distribDiffModule')),
+          shinydashboard::tabItem(tabName = 'analysis', mod_distribDiffModule_ui('analysisModule'))
+
         )
       ) # END dashboardBody
     )

@@ -20,6 +20,10 @@ app_server <- function(input, output, session) {
     if (input$tabs == 'distribdiff') {
       mod_distribDiffModule_server("distribDiffModule")
     }
+
+    if (input$tabs == 'analysis') {
+      mod_distribDiffModule_server("analysisModule")
+    }
   })
 
   output$tabs <- shinydashboard::renderMenu({
@@ -30,7 +34,9 @@ app_server <- function(input, output, session) {
         id = 'tabs',
         shinydashboard::menuItem('Mean/Variance Effect Tests', tabName = 'meanvar'),
         shinydashboard::menuItem('Bimodality Tests', tabName = 'bimodal'),
-        shinydashboard::menuItem('Distribution Tests', tabName = 'distribdiff')
+        shinydashboard::menuItem('Distribution Tests', tabName = 'distribdiff'),
+        shinydashboard::menuItem('Analyze Data', tabName = 'analysis')
+
       ) # END sidebarMenu
     ) # END dashboardSidebar
   })
