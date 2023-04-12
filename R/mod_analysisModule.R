@@ -1,4 +1,4 @@
-#' mod_analysisModule UI Function
+#' analysisModule UI Function
 #'
 #' @description A shiny Module.
 #'
@@ -7,11 +7,10 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-
 mod_meanvarModule_ui <- function(id) {
   ns <- shiny::NS(id)
 
-  shinydashboard::tabItem(tabName = 'Analysis',
+  shinydashboard::tabItem(tabName = 'analysis',
                           shiny::fluidRow(
                             column(
                               width = 3,

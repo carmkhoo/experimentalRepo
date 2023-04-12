@@ -22,7 +22,7 @@ app_server <- function(input, output, session) {
     }
 
     if (input$tabs == 'analysis') {
-      mod_distribDiffModule_server("analysisModule")
+      mod_analysisModule_server("analysisModule")
     }
   })
 
