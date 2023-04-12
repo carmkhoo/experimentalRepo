@@ -7,7 +7,7 @@
 #' @noRd
 #'
 #' @importFrom shiny NS tagList
-mod_meanvarModule_ui <- function(id) {
+mod_analysisModule_ui <- function(id) {
   ns <- shiny::NS(id)
 
   shinydashboard::tabItem(tabName = 'analysis',
@@ -16,9 +16,9 @@ mod_meanvarModule_ui <- function(id) {
                               width = 3,
                               shinydashboard::box(
                                 width = NULL,
-                                title = 'Parameters',
+                                title = 'Settings',
 
-                                fileInput("Dataset","Please input a two column csv file (One column 'group' names, second column 'value'"),
+                                fileInput("annotation","Please input a two column csv file (One column 'group' names, second column 'value'"),
 
                                 numericInput("Alpha",
                                              label = "Significance Level (adjusted for multiple testing)",min = 0.0000000001, max = 0.999, value =0.05),
@@ -100,11 +100,10 @@ mod_meanvarModule_ui <- function(id) {
                             shiny::column(
                               width = 9,
                               shinydashboard::box(width = NULL,
-                                                  title = 'Testing Mean or Variance Effects',
-                                                  verbatimTextOutput(ns('description')),
-                                                  plotly::plotlyOutput(ns("pplt")),
-                                                  DT::dataTableOutput(ns("resTable")),
-                                                  shiny::textOutput(ns("testPrint"))
+                                                  title = 'Analyze your own data',
+                                                  # verbatimTextOutput(ns('description')),
+                                                  shiny::plotOutput(ns("pplt")),
+                                                  DT::dataTableOutput(ns("resTable"))
                               ) # END box
                             ) # END column
                           ) # END fluidRow
@@ -112,18 +111,20 @@ mod_meanvarModule_ui <- function(id) {
 }
 
 
-mod_meanvarModule_server <- function(id) {
+mod_analysisModule_server <- function(id) {
   moduleServer(id,
                function(input, output, session) {
 
-                 vals <- reactiveValues(upld.file = NULL)
+                 vals <- reactiveValues(upld.file = NULL,
+                                        init_tbl = NULL)
 
                  observeEvent(input$annotation,{
                    file <- input$annotation
-                   data <- read.csv(file$datapath)
-                   vals$upld.file <- data
+                   data <- read.csv(file$datapath,header=T)
                    data = na.omit(data)
                    data$value = as.numeric(as.character(data$value))
+                   vals$upld.file <- data
+
                    output$pplt <- shiny::renderPlot({
                      p1 = ggplot(data, aes(x = group, y = value, color = group, fill = group)) +
                        ggplot2::scale_y_continuous() +
@@ -156,28 +157,28 @@ mod_meanvarModule_server <- function(id) {
 
                      if(length(unique(data$group))==1){
                        p2 = decisionSupportExtra::ggplot_descdist(data$value[data$group == unique(data$group[[1]])],boot=input$nboot,boot.col="darkblue")+
-                         theme_classic(14) + theme(strip.background = element_blank(),strip.text = element_blank())
+                         ggplot2::theme_classic(14) + ggplot2::theme(strip.background = element_blank(),strip.text = element_blank())
                      } else {
 
                        p2.1 = decisionSupportExtra::ggplot_descdist(data$value[data$group == unique(data$group[[1]])],boot=input$nboot,boot.col="darkblue",obs.col="darkblue",obs_geom_size = 5)+
-                         theme_classic(14) + theme(strip.background = element_blank(),strip.text = element_blank())+ggtitle(unique(data$group[[1]]))+
-                         theme(legend.position = "bottom")
+                         ggplot2::theme_classic(14) + ggplot2::theme(strip.background = element_blank(),strip.text = element_blank())+ggplot2::ggtitle(unique(data$group[[1]]))+
+                         ggplot2::theme(legend.position = "bottom")
 
                        p2.2 = decisionSupportExtra::ggplot_descdist(data$value[data$group == unique(data$group[[2]])],boot=input$nboot,boot.col="orange",obs.col = "orange",obs_geom_size = 5)+
-                         theme_classic(14) + theme(strip.background = element_blank(),strip.text = element_blank())+ggtitle(unique(data$group[[2]]))+
-                         theme(legend.position = "bottom")
+                         ggplot2::theme_classic(14) + ggplot2::theme(strip.background = element_blank(),strip.text = element_blank())+ggplot2::ggtitle(unique(data$group[[2]]))+
+                         ggplot2::theme(legend.position = "bottom")
 
 
-                       p2 = p2.1 + p2.2
+                       p2 = cowplot::plot_grid(p2.1 , p2.2)
 
                      }
 
-                     print(p1/p2)
+                     cowplot::plot_grid(p1,p2,ncol=1)
 
                    })
 
                    # Initialize table of parameters
-                   init_tbl <- data.frame(
+                   vals$init_tbl <- data.frame(
                      Test = character(),
                      nboot = numeric(),
                      p.value = numeric(),
@@ -187,7 +188,7 @@ mod_meanvarModule_server <- function(id) {
                  })
 
                  observeEvent(input$analysisButton,{
-
+                   init_tbl = vals$init_tbl
                    ss = Analyze_Data(data = vals$upld.file, c(input$vareff,input$bimode,input$meanvar,input$vareff),input$nboot,input$alpha)
                    rownames(ss) = NULL
                    paramsTable <- shiny::reactive({
@@ -201,9 +202,9 @@ mod_meanvarModule_server <- function(id) {
 
                    })
 
-                   output$testPrint <- shiny::renderPrint( c(input$meaneff, input$vareff) ) # ss()[["calcs"]]
 
-                   output$paramsTable <- DT::renderDataTable( paramsTable() )
+                   output$resTable <- DT::renderDataTable( paramsTable() )
+                   })
 
                    output$downloadParams <- shiny::downloadHandler(
 
@@ -216,7 +217,7 @@ mod_meanvarModule_server <- function(id) {
                      }
                    )
 
-                 })
+
                })
 }
 

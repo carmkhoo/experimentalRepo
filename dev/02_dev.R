@@ -92,6 +92,7 @@ usethis::use_jenkins()
 usethis::use_gitlab_ci()
 
 # Add packages ----
+usethis::use_package("cowplot")
 usethis::use_package("dashboardthemes")
 usethis::use_package("diptest")
 usethis::use_package("ggdist")
@@ -108,7 +109,8 @@ usethis::use_package("shiny")
 usethis::use_package("shinydashboard")
 usethis::use_package("shinyjs")
 usethis::use_package("shinyWidgets")
-remotes::install_github("VanAndelInstitute/bifurcatoR", force = T)
+remotes::install_github("madajz/bifurcatoR", force = T)
+remotes::install_github("Issoufou-Liman/decisionSupportExtra", force = T)
 
 # You're now set! ----
 # go to dev/03_deploy.R

@@ -32,7 +32,7 @@ app_ui <- function(request) {
           shinydashboard::tabItem(tabName = 'meanvar', mod_meanvarModule_ui('meanvarModule')),
           shinydashboard::tabItem(tabName = 'bimodal', mod_bimodalityModule_ui('bimodalityModule')),
           shinydashboard::tabItem(tabName = 'distribdiff', mod_distribDiffModule_ui('distribDiffModule')),
-          shinydashboard::tabItem(tabName = 'analysis', mod_distribDiffModule_ui('analysisModule'))
+          shinydashboard::tabItem(tabName = 'analysis', mod_analysisModule_ui('analysisModule'))
 
         )
       ) # END dashboardBody
