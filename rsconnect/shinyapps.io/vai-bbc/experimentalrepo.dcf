@@ -1,0 +1,13 @@
+name: experimentalrepo
+title:
+username:
+account: vai-bbc
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 8886655
+bundleId: 7106464
+url: https://vai-bbc.shinyapps.io/experimentalrepo/
+when: 1681851889.35383
+lastSyncTime: 1681851889.35385
+asMultiple: FALSE
+asStatic: FALSE

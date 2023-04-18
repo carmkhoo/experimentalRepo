@@ -22,6 +22,7 @@ attachment::att_amend_desc()
 golem::add_module(name = "meanvarModule", with_test = TRUE) # Name of the module
 golem::add_module(name = "bimodalityModule", with_test = TRUE) # Name of the module
 golem::add_module(name = "distribDiffModule", with_test = TRUE) # Name of the module
+golem::add_module(name = "analysisModule", with_test = TRUE) # Name of the module
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*

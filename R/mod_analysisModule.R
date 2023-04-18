@@ -18,9 +18,9 @@ mod_analysisModule_ui <- function(id) {
                                 width = NULL,
                                 title = 'Settings',
 
-                                fileInput("annotation","Please input a two column csv file (One column 'group' names, second column 'value'"),
+                                shiny::fileInput(ns("file_name"),"Please input a two column csv file (One column 'group' names, second column 'value'",accept=".csv"),
 
-                                numericInput("Alpha",
+                                shiny::numericInput(ns("Alpha"),
                                              label = "Significance Level (adjusted for multiple testing)",min = 0.0000000001, max = 0.999, value =0.05),
 
 
@@ -47,8 +47,7 @@ mod_analysisModule_ui <- function(id) {
                                     choices = c('Anderson-Darling' = "ad",
                                                 'Kolmogorov–Smirnov' = "ks",
                                                 'Cramer-Von Mises' = "cvm",
-                                                'DTS' = "dts"),
-                                    selected = 'Kolmogorov–Smirnov'
+                                                'DTS' = "dts")
                                   )
                                 ),
 
@@ -59,8 +58,7 @@ mod_analysisModule_ui <- function(id) {
                                     label = 'Mean Methods',
                                     choices = c('ANOVA',
                                                 'Non-parametric ANOVA',
-                                                'Permutations (Raw)'),
-                                    selected = 'ANOVA'
+                                                'Permutations (Raw)')
                                   )
                                 ),
 
@@ -72,8 +70,7 @@ mod_analysisModule_ui <- function(id) {
                                     choices = c('Levene',
                                                 'Permutations (MAD)',
                                                 'Permutations (Gini Index)',
-                                                'Permutations (SD)'),
-                                    selected = 'Levene'
+                                                'Permutations (SD)')
                                   )
                                 ),
 
@@ -90,18 +87,16 @@ mod_analysisModule_ui <- function(id) {
                                       "Hall and York Bandwidth test" = "HY",
                                       "Cheng and Hall Excess Mass" = "CH",
                                       "Ameijeiras-Alonso et al. Excess Mass" = "ACR",
-                                      "Fisher and Marron Carmer-von Mises" = "FM"),
-                                    selected = "dip")
+                                      "Fisher and Marron Carmer-von Mises" = "FM"))
                                 ),
-                                actionButton("analysisButton", "Analyze data")
+                                actionButton(ns("analysisButton"), "Analyze data")
                               )
                             ),
 
                             shiny::column(
                               width = 9,
                               shinydashboard::box(width = NULL,
-                                                  title = 'Analyze your own data',
-                                                  # verbatimTextOutput(ns('description')),
+                                                  title = 'Descriptive Plots of Your Data',
                                                   shiny::plotOutput(ns("pplt")),
                                                   DT::dataTableOutput(ns("resTable"))
                               ) # END box
@@ -112,100 +107,161 @@ mod_analysisModule_ui <- function(id) {
 
 
 mod_analysisModule_server <- function(id) {
+  ns <- shiny::NS(id)
+
   moduleServer(id,
                function(input, output, session) {
 
-                 vals <- reactiveValues(upld.file = NULL,
-                                        init_tbl = NULL)
+              vals <- reactiveValues(tbl=NULL,upld.file=NULL)
 
-                 observeEvent(input$annotation,{
-                   file <- input$annotation
-                   data <- read.csv(file$datapath,header=T)
-                   data = na.omit(data)
-                   data$value = as.numeric(as.character(data$value))
-                   vals$upld.file <- data
-
-                   output$pplt <- shiny::renderPlot({
-                     p1 = ggplot(data, aes(x = group, y = value, color = group, fill = group)) +
-                       ggplot2::scale_y_continuous() +
-                       ggplot2::scale_color_manual(values =c("darkblue","orange")) +
-                       ggplot2::scale_fill_manual(values =c("darkblue","orange")) +
-                       ggplot2::geom_boxplot(
-                         width = .15, fill = "white", outlier.shape = 17, notch = T
-                       ) +
-                       ggdist::stat_halfeye(
-                         color = NA, ## remove slab interval
-                         position = position_nudge(x = .15),
-                         trim=FALSE,
-                         alpha=0.75,
-                         width = .67,
-                       ) +
-                       gghalves::geom_half_point(
-                         side = "l", range_scale = .25,
-                         alpha = .5, size = 2
-                       ) +
-                       ggplot2::theme_classic(16) +
-                       ggplot2::facet_wrap(~group,scales="free_x") +
-                       ggplot2::theme(legend.text = ggplot2::element_text(10),
-                                      strip.background = element_blank(),
-                                      axis.text.x = element_blank(),
-                                      axis.ticks.x = element_blank(),
-                                      legend.title = element_blank(),
-                                      axis.line.x = element_blank(),
-                                      legend.position = "none")+
-                       xlab("") + ylab("Value")
-
-                     if(length(unique(data$group))==1){
-                       p2 = decisionSupportExtra::ggplot_descdist(data$value[data$group == unique(data$group[[1]])],boot=input$nboot,boot.col="darkblue")+
-                         ggplot2::theme_classic(14) + ggplot2::theme(strip.background = element_blank(),strip.text = element_blank())
-                     } else {
-
-                       p2.1 = decisionSupportExtra::ggplot_descdist(data$value[data$group == unique(data$group[[1]])],boot=input$nboot,boot.col="darkblue",obs.col="darkblue",obs_geom_size = 5)+
-                         ggplot2::theme_classic(14) + ggplot2::theme(strip.background = element_blank(),strip.text = element_blank())+ggplot2::ggtitle(unique(data$group[[1]]))+
-                         ggplot2::theme(legend.position = "bottom")
-
-                       p2.2 = decisionSupportExtra::ggplot_descdist(data$value[data$group == unique(data$group[[2]])],boot=input$nboot,boot.col="orange",obs.col = "orange",obs_geom_size = 5)+
-                         ggplot2::theme_classic(14) + ggplot2::theme(strip.background = element_blank(),strip.text = element_blank())+ggplot2::ggtitle(unique(data$group[[2]]))+
-                         ggplot2::theme(legend.position = "bottom")
-
-
-                       p2 = cowplot::plot_grid(p2.1 , p2.2)
-
-                     }
-
-                     cowplot::plot_grid(p1,p2,ncol=1)
-
+              observeEvent(input$file_name,{
+                   vals$tbl = NULL
+                   output$resTable <- DT::renderDataTable({
+                     vals$tbl
                    })
+                   file = input$file_name
+                   upld.file = read.csv(file$datapath,header=T)
+                   upld.file = na.omit(upld.file)
+                   upld.file$value = as.numeric(as.character(upld.file$value))
+                   vals$upld.file <- upld.file
+                   data = upld.file
+                   if(length(unique(data$group)) <2){
+                   shinyWidgets::updatePickerInput(
+                       session = session,
+                       inputId = 'effect',
+                       label = 'Select Effect:',
+                       choices = c('Bimodality'),
+                       selected = 'Bimodality'
+                     )
+                   } else {
+                     shinyWidgets::updatePickerInput(
+                       session = session,
+                       inputId = 'effect',
+                       label = 'Select Effect:',
+                       choices = c('Mean', 'Variance', 'Mean-Variance'),
+                       selected = 'Mean'
+                     )
+                   }
 
-                   # Initialize table of parameters
-                   vals$init_tbl <- data.frame(
-                     Test = character(),
-                     nboot = numeric(),
-                     p.value = numeric(),
-                     Stat = numeric(),
-                     CI = character()
-                   )
-                 })
+              output$pplt <- shiny::renderPlot({
 
-                 observeEvent(input$analysisButton,{
-                   init_tbl = vals$init_tbl
-                   ss = Analyze_Data(data = vals$upld.file, c(input$vareff,input$bimode,input$meanvar,input$vareff),input$nboot,input$alpha)
-                   rownames(ss) = NULL
-                   paramsTable <- shiny::reactive({
-                     calcOutput <- ss
-                     # calcOutput
-                     tbl_row <- nrow(calcOutput)
-                     tbl <- ss
-                     tbl <- tbl[order(tbl$Test),]
-                     rbind(init_tbl, tbl)
-                     # })
+                if(length(unique(data$group))>1){
+                  p1 = ggplot2::ggplot(data, ggplot2::aes(x = group, y = value, color = group, fill = group)) +
+                    ggplot2::scale_y_continuous() +
+                    ggplot2::scale_color_manual(values =c("darkblue","orange")) +
+                    ggplot2::scale_fill_manual(values =c("darkblue","orange"))
+                } else{
+                  p1 = ggplot2::ggplot(data, ggplot2::aes(x = group, y = value, color = group, fill = group)) +
+                    ggplot2::scale_y_continuous() +
+                    ggplot2::scale_color_manual(values =c("darkorchid4")) +
+                    ggplot2::scale_fill_manual(values =c("darkorchid4"))
 
+                }
+
+                p1 = p1 +  ggplot2::geom_boxplot(
+                    width = .15, fill = "white", outlier.shape = 17, notch = F
+                  ) +
+                  ggdist::stat_halfeye(
+                    color = NA, ## remove slab interval
+                    position = ggplot2::position_nudge(x = .15),
+                    trim=FALSE,
+                    alpha=0.75,
+                    width = .67,
+                  ) +
+                  gghalves::geom_half_point(
+                    side = "l", range_scale = .25,
+                    alpha = .5, size = 2
+                  ) +
+                  ggplot2::theme_classic(16) +
+                  ggplot2::theme(legend.text = ggplot2::element_text(10),
+                                 strip.background = ggplot2::element_blank(),
+                                 axis.text.x = ggplot2::element_blank(),
+                                 axis.ticks.x = ggplot2::element_blank(),
+                                 legend.title = ggplot2::element_blank(),
+                                 axis.line.x = ggplot2::element_blank(),
+                                 legend.position = "none")+
+                  ggplot2::xlab("") + ggplot2::ylab("Value")
+
+                if(length(unique(data$group))==1){
+
+                  p1 = p1 + ggplot2::facet_wrap(~group) +
+                    ggplot2::theme(legend.text = ggplot2::element_text(10),
+                                   strip.background = ggplot2::element_blank(),
+                                   axis.text.x = ggplot2::element_blank(),
+                                   axis.ticks.x = ggplot2::element_blank(),
+                                   legend.title = ggplot2::element_blank(),
+                                   axis.line.x = ggplot2::element_blank(),
+                                   legend.position = "none")+
+                    ggplot2::xlab("") + ggplot2::ylab("Value")
+
+                  p2 = decisionSupportExtra::ggplot_descdist(data$value[data$group == unique(data$group[[1]])],boot=input$nboot,boot.col="darkorchid",obs.col="darkorchid4" , obs_geom_size = 4,boot_geom_size = 0.02)+
+                    ggplot2::theme_minimal(12) + ggplot2::theme(strip.background = ggplot2::element_blank(),
+                                                                strip.text = ggplot2::element_blank(),
+                                                                legend.text = ggplot2::element_text(size=ggplot2::rel(.5)))
+
+                  p2.l = cowplot::get_legend(p2)
+                  # p2 = cowplot::plot_grid(p2+ggplot2::theme(legend.position = "none"),p2.l,ncol=1)
+                  p2 = p2+ggplot2::theme(legend.position = "none")
+
+                } else {
+                  p1 = p1 + ggplot2::facet_wrap(~ group,scales="free_y") +
+                    ggplot2::theme(legend.text = ggplot2::element_text(10),
+                                   strip.background = ggplot2::element_blank(),
+                                   axis.text.y = ggplot2::element_blank(),
+                                   axis.ticks.y = ggplot2::element_blank(),
+                                   legend.title = ggplot2::element_blank(),
+                                   axis.line.y = ggplot2::element_blank(),
+                                   legend.position = "none")+
+                    ggplot2::ylab("") + ggplot2::xlab("Value") + ggplot2::coord_flip()
+
+                  p2.1 = decisionSupportExtra::ggplot_descdist(data$value[data$group == unique(data$group)[[1]]],boot=input$nboot,boot.col="blue",obs.col="darkblue",obs_geom_size = 5)+
+                    ggplot2::theme_minimal(12) + ggplot2::theme(strip.background = ggplot2::element_blank(),strip.text = ggplot2::element_blank(),
+                                                                legend.text = ggplot2::element_text(size=8))+ggplot2::ggtitle(unique(data$group)[[1]])
+
+                  p2.1 = p2.1+ggplot2::theme(legend.position = "none")
+
+
+
+                  p2.2 = decisionSupportExtra::ggplot_descdist(data$value[data$group == unique(data$group)[[2]]],boot=input$nboot,boot.col="orange",obs.col = "darkorange",obs_geom_size = 5)+
+                    ggplot2::theme_minimal(12) + ggplot2::theme(strip.background = ggplot2::element_blank(),strip.text = ggplot2::element_blank(),
+                                                                legend.text = ggplot2::element_text(size=8))+ggplot2::ggtitle(unique(data$group)[[2]])
+
+                  p2.2 = p2.2+ggplot2::theme(legend.position = "none")
+
+                  p2 = cowplot::plot_grid(p2.1 , p2.2)
+
+                  p2.l = cowplot::get_legend(decisionSupportExtra::ggplot_descdist(data$value[data$group == unique(data$group)[[2]]],boot=input$nboot,boot.col="black",obs.col = "black" , obs_geom_size = 4,boot_geom_size = 0.02)+
+                                               ggplot2::theme_minimal(12) + ggplot2::theme(strip.background = ggplot2::element_blank(),strip.text = ggplot2::element_blank(),
+                                                                                           legend.text = ggplot2::element_text(size=8),
+                                                                                           legend.position="bottom")+ggplot2::ggtitle(unique(data$group)[[2]])
+                  )
+
+                }
+
+                if(length(unique(data$group))<2){
+                  cowplot::plot_grid(cowplot::plot_grid(p1,p2,ncol=2,scale=c(0.9,0.8)),
+                                     cowplot::plot_grid(p2.l),rel_widths = c(1,.35))
+
+                } else {
+                  cowplot::plot_grid(cowplot::plot_grid(p1,p2,ncol=1,rel_heights=c(.75,1)),
+                  cowplot::plot_grid(p2.l),rel_heights = c(1,.25),ncol=1)
+                }
+
+
+               }) #close renderPlot
+              })
+
+
+             observeEvent(input$analysisButton,{
+                   if(length(unique(vals$upld.file$group))>1){
+                    vals$tbl = rbind(vals$tbl,bifurcatoR_Analysis(data = vals$upld.file, c(input$vareff,input$meanvar,input$meaneff),input$nboot,input$alpha))
+                   } else {
+                    vals$tbl = rbind(vals$tbl,bifurcatoR_Analysis(data = vals$upld.file, c(input$bimode),input$nboot,input$alpha))
+                   }
+                   output$resTable <- DT::renderDataTable({
+                     vals$tbl
                    })
-
-
-                   output$resTable <- DT::renderDataTable( paramsTable() )
-                   })
-
+              })
                    output$downloadParams <- shiny::downloadHandler(
 
                      filename = function() {
