@@ -8,10 +8,16 @@ URL: https://www.github.com/carmkhoo/experimentalRepo
 BugReports: https://www.github.com/carmkhoo/experimentalRepo/issues
 Depends: R
 Imports: 
+    BiocManager,
     bifurcatoR,
     config (>= 0.3.1),
+    cowplot,
     dashboardthemes,
+    decisionSupportExtra,
     diptest,
+    DT,
+    ggdist,
+    gghalves,
     ggplot2,
     golem (>= 0.3.2),
     Hmisc,
@@ -21,6 +27,7 @@ Imports:
     pkgload,
     mousetrap,
     plotly,
+    reshape2,
     shiny (>= 1.6.0),
     shinydashboard,
     shinyWidgets,

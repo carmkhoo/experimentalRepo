@@ -20,7 +20,7 @@ mod_analysisModule_ui <- function(id) {
 
                                 shiny::fileInput(ns("file_name"),"Please input a two column csv file (One column 'group' names, second column 'value'",accept=".csv"),
 
-                                shiny::numericInput(ns("Alpha"),
+                                shiny::numericInput(ns("alpha"),
                                              label = "Significance Level (adjusted for multiple testing)",min = 0.0000000001, max = 0.999, value =0.05),
 
 
