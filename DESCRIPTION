@@ -14,7 +14,7 @@ Imports:
     cowplot,
     dashboardthemes,
     decisionSupportExtra,
-    data.table
+    data.table,
     diptest,
     DT,
     ggdist,
