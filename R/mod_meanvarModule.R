@@ -99,7 +99,8 @@ mod_meanvarModule_ui <- function(id) {
                                     label = 'Variance Methods',
                                     choices = c('Levene',
                                                 'Permutations (MAD)',
-                                                'Permutations (Gini Index)'),
+                                                'Permutations (Gini Index)',
+                                                'Permutations (SD)'),
                                     selected = 'Levene'
                                   )
                                 ),
