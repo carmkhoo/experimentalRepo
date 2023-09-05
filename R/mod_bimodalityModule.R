@@ -60,7 +60,7 @@ mod_bimodalityModule_ui <- function(id) {
               min = 0.01,
               max = 50
             ),
-            
+
             sliderInput(
               ns("p"),
               label = "Proportion in mode 1",
@@ -89,7 +89,7 @@ mod_bimodalityModule_ui <- function(id) {
               min = 0.01,
               max = 50
             ),
-            
+
             sliderInput(
               ns("p"),
               label = "Proportion in mode 1",
@@ -122,6 +122,8 @@ mod_bimodalityModule_ui <- function(id) {
             choices = list(
               "Hartigans' dip test" = "dip",
               "Mclust" = "mclust",
+              "Gaussian mixR" = "GmixR",
+              "Weibull mixR" = "WmixR",
               "Bimodality Coefficient" = "mt",
               "Silverman Bandwidth test" = "SI",
               "Hall and York Bandwidth test" = "HY",
@@ -139,7 +141,7 @@ mod_bimodalityModule_ui <- function(id) {
             max = 5000,
             value = 10
           ),
-          
+
           numericInput(
             ns("nboot"),
             label = "Number of bootstraps",

@@ -82,6 +82,8 @@ mod_analysisModule_ui <- function(id) {
                                     choices = list(
                                       "Hartigans dip test" = "dip",
                                       "Mclust" = "mclust",
+                                      "Gaussian mixR" = "GmixR",
+                                      "Weibull mixR" = "WmixR",
                                       "Bimodality Coefficient" = "mt",
                                       "Silverman Bandwidth test" = "SI",
                                       "Hall and York Bandwidth test" = "HY",

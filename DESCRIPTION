@@ -24,6 +24,7 @@ Imports:
     Hmisc,
     LaplacesDemon,
     mclust,
+    mixR,
     multimode,
     pkgload,
     mousetrap,
