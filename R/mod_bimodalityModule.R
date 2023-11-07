@@ -139,16 +139,25 @@ mod_bimodalityModule_ui <- function(id) {
             label = "Number of simulations",
             min = 10,
             max = 5000,
-            value = 10
+            value = 100
           ),
 
           numericInput(
             ns("nboot"),
-            label = "Number of bootstraps",
+            label = "Number of bootstraps and/or permutations",
             min = 10,
             max = 5000,
             value = 100
           ),
+
+         shiny::h5("To run simulations, be sure all of your parameters are set as desired and hit the 'Run Simulation' button. Please be patient as simualtions can take awhile to run."),
+
+         shinyWidgets::actionBttn(inputId = ns("runsim2"),
+                                  label = "Run Simulation",
+                                  style = "gradient",
+                                  color = "primary",
+                                  size = "sm"),
+
 
           shiny::h5("To save parameters, enter file name and click the Download button:"),
 
@@ -188,35 +197,11 @@ mod_bimodalityModule_ui <- function(id) {
 mod_bimodalityModule_server <- function(id) {
   moduleServer(id,
                function(input, output, session) {
-                 # observeEvent(input$dist, {
-                 #   output$inputdist = renderUI({
-                 #     input_list <- if(input$dist == "norm"){
-                 #       list(
-                 #         numericInput(ns("mu1"),
-                 #                      label="Mean of mode 1", value=0, min = NA, max = NA),
-                 #         numericInput(ns("sd1"),
-                 #                      label="SD of mode 1", value=1, min = NA, max = NA),
-                 #         numericInput(ns("mu2"),
-                 #                      label="Mean of mode 2", value=3, min = NA, max = NA),
-                 #         numericInput(ns("sd2"),
-                 #                      label="SD of mode 2", value=1, min = NA, max = NA),
-                 #         sliderInput(ns("p"),
-                 #                     label = "Proportion in mode 1",min = 0.01, max = 0.99, value = .5, step = .01))
-                 #     } else {
-                 #       if(input$dist == "beta"){
-                 #         list(
-                 #           numericInput(ns("s1"),
-                 #                        label="Shape parameter 1", value=.5, min = NA, max = NA),
-                 #           numericInput(ns("s2"),
-                 #                        label="Shape parameter 2", value=.5, min = NA, max = NA))}
-                 #     }
-                 #     do.call(tagList, input_list)
-                 #   })
-                 # })
+                 vals <- reactiveValues(ss = data.frame(Test=rep("Example of selected tests",2),N=2,p=0.5,value=c(1,0),variable=c("Power","FP")))
 
-                 ss <- reactive({
+                 observeEvent(input$runsim2,{
                    if (input$dist == "norm") {
-                     calcs =  reshape2::melt(as.data.frame(
+                     calcs =  reshape2::melt(data.frame(as.data.frame(
                        bifurcatoR::est_pow(
                          input$n,
                          input$alpha,
@@ -231,19 +216,19 @@ mod_bimodalityModule_server <- function(id) {
                          ),
                          tests = input$checkGroup2,
                          nboot = input$nboot
-                       )
-                     ), id.vars = c("N", "Test"))
+                       )), Proportion = input$p
+                     ), id.vars = c("N","Proportion", "Test"))
 
-                     dens.plot = data.frame(var = c(
-                       rnorm(ceiling(input$p * 2000), input$mu[1], input$sd[1]),
-                       rnorm(ceiling((1 - input$p) * 2000), input$mu[2], input$sd[2])
-                     ))
+                     # dens.plot = data.frame(var = c(
+                     #   rnorm(ceiling(input$p * 2000), input$mu[1], input$sd[1]),
+                     #   rnorm(ceiling((1 - input$p) * 2000), input$mu[2], input$sd[2])
+                     # ))
 
 
                    } else {
                      if (input$dist == "beta") {
-                       dens.plot =  data.frame(var = rbeta(2000, input$s[1], input$s[2]))
-                       calcs =  reshape2::melt(as.data.frame(
+                       # dens.plot =  data.frame(var = rbeta(2000, input$s[1], input$s[2]))
+                       calcs =  reshape2::melt(data.frame(as.data.frame(
                          bifurcatoR::est_pow(
                            input$n,
                            input$alpha,
@@ -252,11 +237,11 @@ mod_bimodalityModule_server <- function(id) {
                            list(s1 = input$s[1], s2 = input$s[2]),
                            tests = input$checkGroup2,
                            nboot = input$nboot
-                         )
-                       ), id.vars = c("N", "Test"))
+                         )), Proportion = input$p
+                       ), id.vars = c("N","Proportion", "Test"))
                      } else {
                       if (input$dist == "weib") {
-                       calcs =  reshape2::melt(as.data.frame(
+                       calcs =  reshape2::melt(data.frame(as.data.frame(
                            bifurcatoR::est_pow(
                             input$n,
                             input$alpha,
@@ -271,33 +256,48 @@ mod_bimodalityModule_server <- function(id) {
                              ),
                             tests = input$checkGroup2,
                             nboot = input$nboot
-                           )
-                         ), id.vars = c("N", "Test"))
+                           )), Proportion = input$p
+                         ), id.vars = c("N","Proportion", "Test"))
 
-                        dens.plot = data.frame(var = c(
-                        rweibull(ceiling(input$p * 2000), input$sp[1], input$sc[1]),
-                        rweibull(ceiling((1 - input$p) * 2000), input$sp[2], input$sc[2])
-                      ))
+                      #   dens.plot = data.frame(var = c(
+                      #   rweibull(ceiling(input$p * 2000), input$sp[1], input$sc[1]),
+                      #   rweibull(ceiling((1 - input$p) * 2000), input$sp[2], input$sc[2])
+                      # ))
                       }
                     }
                    }
-                   list(dens.plot = dens.plot, calcs = calcs)
-                 })
+                     vals$ss = vals$ss[vals$ss$Test != "Example of selected tests",]
+                     vals$ss <-  rbind(vals$ss,calcs)
+                   })
 
 
                  output$pplt <- plotly::renderPlotly({
-                   p1 = plotly::ggplotly(
-                     ggplot2::ggplot() +
-                       ggplot2::geom_density(data = ss()[["dens.plot"]], ggplot2::aes(x = var)) +
+                   p1 = ggplot2::ggplot() +
                        ggplot2::theme_classic(14) +
                        ggplot2::ylab("Population density") +
                        ggplot2::xlab("Modes") +
                        ggplot2::theme(legend.text = ggplot2::element_text(10))
-                   )
+                   if(input$dist == "norm"){
+                     p1 = p1 + ggplot2::stat_function(fun = function(x) {(dnorm(x, mean = input$mu[1], sd = input$sd[1]) * input$p)  +
+                         (dnorm(x, mean = input$mu[2], sd = input$sd[2]) * (1-input$p)) },
+                       alpha=0.5,linewidth=0.7,color = "black") +
+
+                       ggplot2::scale_x_continuous(limits=c(min(input$mu[1]) - 3*input$sd[1]  , min(input$mu[2]) + 3*input$sd[2]))
+
+                   } else if(input$dist == "beta"){
+                     p1 = p1 + ggplot2::stat_function(fun = function(x) {(dbeta(x, mean = input$s[1], sd = input$s[2]))  },
+                         alpha=0.5,linewidth=0.7,color = "black")
+                   } else {
+                     p1 = p1 + ggplot2::stat_function(fun = function(x) {(dweibull(x, shape = input$sp[1], scale = input$sc[1]) * input$p)  +
+                         (dweibull(x, shape = input$sp[2], scale = input$sc[2]) * (1-input$p)) },
+                         alpha=0.5,linewidth=0.7,color = "black")
+                   }
+
+
                    fig1 = plotly::ggplotly(p1)
 
                    p2 = plotly::ggplotly(
-                     ggplot2::ggplot(data = ss()[["calcs"]], ggplot2::aes(
+                     ggplot2::ggplot(data = vals$ss , ggplot2::aes(
                        x = Test, y = value, color = variable
                      )) +
                        ggplot2::geom_point(position = ggplot2::position_dodge(width = .25)) +
@@ -321,21 +321,9 @@ mod_bimodalityModule_server <- function(id) {
 
                  })
 
-                 paramsTable <- shiny::reactive({
 
-                   calcOutput <- ss()[['calcs']]
-                   # calcOutput$Row <- 1:nrow(calcOutput)
 
-                   results <- data.frame(
-                     Distribution = input$dist,
-                     nSim = input$nsim
-                   )
-
-                   calcOutput <- tidyr::pivot_wider(calcOutput, names_from = c('Test', 'variable'), values_from = 'value')
-                   tidyr::expand_grid(results, calcOutput)
-                 })
-
-                 output$paramsTable <- DT::renderDataTable( paramsTable() )
+                 output$paramsTable <- DT::renderDataTable( vals$ss )
 
                  output$downloadParams <- shiny::downloadHandler(
 

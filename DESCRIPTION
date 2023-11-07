@@ -10,6 +10,7 @@ Depends: R
 Imports: 
     BiocManager,
     bifurcatoR,
+    bsplus,
     config (>= 0.3.1),
     cowplot,
     dashboardthemes,
@@ -17,12 +18,14 @@ Imports:
     data.table,
     diptest,
     DT,
+    EpiNow2,
     ggdist,
     gghalves,
     ggplot2,
     golem (>= 0.3.2),
     Hmisc,
     LaplacesDemon,
+    magrittr,
     mclust,
     mixR,
     multimode,
@@ -31,8 +34,10 @@ Imports:
     plotly,
     reshape2,
     shiny (>= 1.6.0),
+    shinyBS,
     shinydashboard,
     shinyWidgets,
+    tidyr,
     roxygen2,
     shinyjs
 Suggests: 

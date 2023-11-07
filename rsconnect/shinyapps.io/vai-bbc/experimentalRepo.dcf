@@ -5,9 +5,7 @@ account: vai-bbc
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 8886655
-bundleId: 7119001
+bundleId: 7862818
 url: https://vai-bbc.shinyapps.io/experimentalrepo/
-when: 1682095364.78152
-lastSyncTime: 1682095364.78155
 asMultiple: FALSE
 asStatic: FALSE

@@ -12,6 +12,7 @@ app_ui <- function(request) {
     shinydashboard::dashboardPage(
       header = shinydashboard::dashboardHeader(title = 'Simulations'),
       sidebar = shinydashboard::dashboardSidebar(
+        bsplus::use_bs_popover(),
         width = 250,
         disable = FALSE,
         shinydashboard::sidebarMenu(
@@ -26,6 +27,8 @@ app_ui <- function(request) {
         # tags$head(
         #   tags$link(rel = 'stylesheet', type = 'text/css', href = '~/TR01/style.css')
         # ),
+
+
         dashboardthemes::shinyDashboardThemes(theme = 'poor_mans_flatly'),
 
         shinydashboard::tabItems(
@@ -34,7 +37,13 @@ app_ui <- function(request) {
           shinydashboard::tabItem(tabName = 'distribdiff', mod_distribDiffModule_ui('distribDiffModule')),
           shinydashboard::tabItem(tabName = 'analysis', mod_analysisModule_ui('analysisModule'))
 
-        )
+        ),
+
+        tags$style(HTML('.popover-title {color:black;}
+                         .popover-content {color:black;}
+                         .main-sidebar {z-index:auto;}
+                         .popover{width:200px;height:250px;}'))
+
       ) # END dashboardBody
     )
     # fluidPage(
