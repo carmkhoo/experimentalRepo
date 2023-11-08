@@ -204,13 +204,13 @@ mod_meanvarModule_server <- function(id) {
                function(input, output, session) {
 
                  vals <- reactiveValues(ss = data.frame(Test=rep("Example of selected tests",2), "Sample.Sizes" = "[n1, n2]",value=c(1,0),variable=c("Power","FP")),
-                                        tbl = data.frame(Test=rep("Example of selected tests",2), "Sample.Sizes" = "[n1, n2]",value=c(1,0),variable=c("Power","FP")))
+                                        tbl = data.frame(Distribution = "TBD",Mean.Diff = NA,SD_FC = NA,Test="Example of selected tests", "Sample.Sizes" = "[n1, n2]",Power=1,FP = 0))
 
                  observeEvent(input$runsim1,{
                    # print("button works")
 
                   if (input$dist == "Gaussian") {
-                     calcs =  reshape2::melt(data.frame(as.data.frame(
+                     calcs =  data.frame(as.data.frame(
                        est_pow_2samp(
                          input$nsize[1],
                          input$nsize[2],
@@ -225,7 +225,7 @@ mod_meanvarModule_server <- function(id) {
                          c(input$meaneff, input$vareff),
                          input$nperm
                        )), "Sample.Sizes" = paste0("[",input$nsize[1],", ", input$nsize[2],"]")
-                     ),id.vars=c("Test","Sample.Sizes"))
+                     )
 
 
                      # dens.plot = data.frame(var = c(
@@ -237,11 +237,11 @@ mod_meanvarModule_server <- function(id) {
 
                    } else {
                      if (input$dist == "Weibull") {
-                           calcs = reshape2::melt(data.frame(as.data.frame(est_pow_2samp(input$nsize[1],
+                           calcs = data.frame(as.data.frame(est_pow_2samp(input$nsize[1],
                                                               input$nsize[2], input$alpha, input$nsim, 1,
                                                               "weib", list(mean = input$gaussmean, v_scale = input$gaussvar),
-                                                              c(input$meaneff, input$vareff), input$nperm)), "Sample Sizes" = paste0("[",input$nsize[1],", ", input$nsize[2],"]")
-                           ),id.vars=c("Test","Sample Sizes"))
+                                                              c(input$meaneff, input$vareff), input$nperm)), "Sample.Sizes" = paste0("[",input$nsize[1],", ", input$nsize[2],"]")
+                           )
                             ## Distirbution for the reference group is weibull(1,1), user still enters mean eff and var eff
                             ## the R package mixdist is then used to get shape and scale paramters from new mean and sd
                             # shape = mixdist::weibullpar(1+input$gaussmean,1*input$gaussvar, loc = 0)$shape
@@ -250,17 +250,24 @@ mod_meanvarModule_server <- function(id) {
                             #                        Group = c(rep("Genotype 1", 3000), rep("Genotype 2", 3000)))
                      } else {
                        if(input$dist == "Log-normal"){
-                       calcs = reshape2::melt(data.frame(as.data.frame(est_pow_2samp(input$nsize[1],
+
+                       calcs = data.frame(as.data.frame(est_pow_2samp(input$nsize[1],
                                                                                      input$nsize[2], input$alpha, input$nsim, 1,
                                                                                      "lnorm", list(mean = input$gaussmean, v_scale = input$gaussvar),
-                                                                                     c(input$meaneff, input$vareff), input$nperm)), "Sample Sizes" = paste0("[",input$nsize[1],", ", input$nsize[2],"]")
-                       ),id.vars=c("Test","Sample Sizes"))
+                                                                                     c(input$meaneff, input$vareff), input$nperm)), "Sample.Sizes" = paste0("[",input$nsize[1],", ", input$nsize[2],"]")
+                       )
+
                      }
                      }
                    }
                    vals$ss = vals$ss[vals$ss$Test != "Example of selected tests",]
                    vals$tbl = vals$tbl[vals$tbl$Test != "Example of selected tests",]
-                   vals$ss <- calcs
+
+                   vals$ss <- reshape2::melt(calcs,id.vars=c("Test","Sample.Sizes"))
+                   calcs$Distribution = input$dist
+                   calcs$Mean.Diff = input$gaussmean
+                   calcs$SD_FC = input$gaussvar
+
                    vals$tbl <-  rbind(vals$tbl,calcs)
                  })
 
