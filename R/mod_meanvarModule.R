@@ -29,7 +29,7 @@ mod_meanvarModule_ui <- function(id) {
                                     bsplus::shinyInput_label_embed(
                                       bsplus::shiny_iconlink() %>%
                                         bsplus::bs_embed_popover(
-                                          title = "More info", content = "Parent distribution from which samples are drawn. Gaussian (AKA normal) and Weibull", placement ="right"
+                                          title = "More info", content = "Parent distribution from which samples are drawn. Gaussian (AKA normal), Weibull, and log-normal", placement ="right"
                                         )
                                     ),
 
@@ -43,7 +43,7 @@ mod_meanvarModule_ui <- function(id) {
                                   bsplus::shinyInput_label_embed(
                                     bsplus::shiny_iconlink() %>%
                                       bsplus::bs_embed_popover(
-                                        title = "More info", content = "Mean differnece between two groups of interest. For simplicity it's assumed that both groups have been scaled and translated such that one group is the standard normal for Gaussian or, a Weibull with mean and sd of 1", placement ="right"
+                                        title = "More info", content = "Mean differnece between two groups of interest. For simplicity it's assumed that both groups have been scaled and translated such that one group is the standard normal for Gaussian and log-normal, or for Weibull, mean and sd of 1", placement ="right"
                                       )
                                   ),
 
@@ -206,6 +206,15 @@ mod_meanvarModule_server <- function(id) {
                  vals <- reactiveValues(ss = data.frame(Test=rep("Example of selected tests",2), "Sample.Sizes" = "[n1, n2]",value=c(1,0),variable=c("Power","FP")),
                                         tbl = data.frame(Distribution = "TBD",Mean.Diff = NA,SD_FC = NA,Test="Example of selected tests", "Sample.Sizes" = "[n1, n2]",Power=1,FP = 0))
 
+                 observeEvent(input$dist ,{vals$ss = data.frame(Test=rep("Example of selected tests",2), "Sample.Sizes" = "[n1, n2]",value=c(1,0),variable=c("Power","FP"))})
+                 observeEvent(input$nsize ,{vals$ss = data.frame(Test=rep("Example of selected tests",2), "Sample.Sizes" = "[n1, n2]",value=c(1,0),variable=c("Power","FP"))})
+                 observeEvent(input$gaussmean ,{vals$ss = data.frame(Test=rep("Example of selected tests",2), "Sample.Sizes" = "[n1, n2]",value=c(1,0),variable=c("Power","FP"))})
+                 observeEvent(input$gaussvar ,{vals$ss = data.frame(Test=rep("Example of selected tests",2), "Sample.Sizes" = "[n1, n2]",value=c(1,0),variable=c("Power","FP"))})
+                 observeEvent(input$nperm ,{vals$ss = data.frame(Test=rep("Example of selected tests",2), "Sample.Sizes" = "[n1, n2]",value=c(1,0),variable=c("Power","FP"))})
+                 observeEvent(input$nsim ,{vals$ss = data.frame(Test=rep("Example of selected tests",2), "Sample.Sizes" = "[n1, n2]",value=c(1,0),variable=c("Power","FP"))})
+                 observeEvent(input$alpha ,{vals$ss = data.frame(Test=rep("Example of selected tests",2), "Sample.Sizes" = "[n1, n2]",value=c(1,0),variable=c("Power","FP"))})
+
+
                  observeEvent(input$runsim1,{
                    # print("button works")
 
@@ -324,26 +333,31 @@ mod_meanvarModule_server <- function(id) {
                    }
 
                    fig1 = plotly::ggplotly(p1)
-                   if(length(vals$ss) > 0){
+
+                   if(vals$ss$Test[1] != "Example of selected tests" ){
                    p2 = ggplot2::ggplot(data =vals$ss, ggplot2::aes(
                        x = Test, y = value, color = variable
-                     ))
+                     )) + ggplot2::geom_point(position = ggplot2::position_dodge(width = .25)) +
+                     ggplot2::theme_classic(14) +
+                     ggplot2::ylab("Probability") +
+                     ggplot2::xlab("Test") +
+                     ggplot2::labs(color=NULL)+
+                     ggplot2::theme(
+                       legend.title = ggplot2::element_blank(),
+                       legend.text = ggplot2::element_text(10),
+                       axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)
+                     ) +
+                     ggplot2::scale_color_manual(values = c("black", "red")) +
+                     ggplot2::coord_cartesian(ylim = c(-.01, 1.01))
                    }  else {
-                     p2 = ggplot2::ggplot()
+                     p2 = ggplot2::ggplot()+
+                       ggplot2::geom_text(ggplot2::aes(1,0.5,label="Please run simulation to plot results",color="darkred"))+
+                       ggplot2::theme_classic()+ggplot2::theme(legend.key = ggplot2::element_rect(fill = "white"), legend.text = ggplot2::element_text(color = "white"), legend.title = ggplot2::element_text(color = "white")) +
+                       ggplot2::guides(color = ggplot2::guide_legend(override.aes = list(color = NA)))+
+                       ggplot2::scale_y_continuous(limits=c(0,1))
                    }
 
-                   p2 = p2 +
-                       ggplot2::geom_point(position = ggplot2::position_dodge(width = .25)) +
-                       ggplot2::theme_classic(14) +
-                       ggplot2::ylab("Probability") +
-                       ggplot2::xlab("Test") +
-                       ggplot2::theme(
-                         legend.title = ggplot2::element_blank(),
-                         legend.text = ggplot2::element_text(10),
-                         axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)
-                       ) +
-                       ggplot2::scale_color_manual(values = c("black", "red")) +
-                       ggplot2::coord_cartesian(ylim = c(-.01, 1.01))
+
 
                    fig2 = plotly::ggplotly(p2)
 
