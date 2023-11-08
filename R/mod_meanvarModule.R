@@ -252,7 +252,7 @@ mod_meanvarModule_server <- function(id) {
                        if(input$dist == "Log-normal"){
                        calcs = reshape2::melt(data.frame(as.data.frame(est_pow_2samp(input$nsize[1],
                                                                                      input$nsize[2], input$alpha, input$nsim, 1,
-                                                                                     "weib", list(mean = input$gaussmean, v_scale = input$gaussvar),
+                                                                                     "lnorm", list(mean = input$gaussmean, v_scale = input$gaussvar),
                                                                                      c(input$meaneff, input$vareff), input$nperm)), "Sample Sizes" = paste0("[",input$nsize[1],", ", input$nsize[2],"]")
                        ),id.vars=c("Test","Sample Sizes"))
                      }
